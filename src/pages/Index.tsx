@@ -66,13 +66,13 @@ const Index = () => {
 
             {/* Компьютер — главный акцент */}
             <div className="relative flex items-end justify-center lg:justify-end">
-              {/* Деликатное красное свечение позади корпуса */}
-              <div className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/12 blur-[140px]" />
+              {/* Деликатное фирменное свечение позади корпуса */}
+              <div className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/12 blur-[140px]" />
               {/* Мягкая тень-опора под корпусом */}
               <div className="pointer-events-none absolute bottom-2 left-1/2 h-10 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/60 blur-2xl" />
               <img
-                src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/hero/razpc-hero-v2.png"
-                alt="Игровой ПК RazPC"
+                src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/hero/razpc-geometric-yellow.png"
+                alt="Игровой ПК RazPC — Geometric Future Model 5"
                 className="relative z-10 w-full max-w-[620px] animate-scale-in"
               />
             </div>
