@@ -28,59 +28,50 @@ const Index = () => {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
+        {/* Фон — фото ПК Geometric Future */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/4da08b97-be36-426f-b605-f6c306b002aa.jpeg)' }}
+        />
+        {/* Затемнение для читаемости */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-background/60" />
 
-        <div className="container-page relative py-20 md:py-28">
-          <div className="grid items-center gap-12 lg:grid-cols-[52%_48%] lg:gap-8">
-            {/* Текст */}
-            <div className="animate-fade-in text-center lg:text-left">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 backdrop-blur-sm">
-                <span className="flex h-2 w-2 rounded-full bg-primary" />
-                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Компьютерная мастерская нового уровня
-                </span>
-              </div>
-              <h1 className="font-heading text-5xl font-bold leading-[1.05] md:text-6xl xl:text-7xl">
-                Надёжные решения для<br />
-                <span className="text-gradient">вашей техники</span>
-              </h1>
-              <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground lg:mx-0">
-                {siteInfo.name} — ремонт, сборка и обслуживание компьютеров с гарантией результата.
-                Работаем для частных клиентов и бизнеса.
-              </p>
-              <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
-                <Button asChild size="lg" className="w-full sm:w-auto">
-                  <Link to="/catalog">
-                    <Icon name="LayoutGrid" size={18} className="mr-2" />
-                    Смотреть каталог
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-                  <Link to="/configurator">
-                    <Icon name="Cpu" size={18} className="mr-2" />
-                    Собрать ПК
-                  </Link>
-                </Button>
-              </div>
+        <div className="container-page relative py-24 md:py-36">
+          <div className="max-w-2xl animate-fade-in">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 backdrop-blur-sm">
+              <span className="flex h-2 w-2 rounded-full bg-primary" />
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Компьютерная мастерская нового уровня
+              </span>
             </div>
-
-            {/* Компьютер — главный акцент */}
-            <div className="relative flex items-end justify-center lg:justify-end">
-              {/* Деликатное фирменное свечение позади корпуса */}
-              <div className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/12 blur-[140px]" />
-              {/* Мягкая тень-опора под корпусом */}
-              <div className="pointer-events-none absolute bottom-2 left-1/2 h-10 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/60 blur-2xl" />
-              <img
-                src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/hero/razpc-geometric-yellow.png"
-                alt="Игровой ПК RazPC — Geometric Future Model 5"
-                className="relative z-10 w-full max-w-[620px] animate-scale-in"
-              />
+            <h1 className="font-heading text-5xl font-bold leading-[1.05] md:text-6xl xl:text-7xl">
+              Надёжные решения для<br />
+              <span className="text-gradient">вашей техники</span>
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+              {siteInfo.name} — ремонт, сборка и обслуживание компьютеров с гарантией результата.
+              Работаем для частных клиентов и бизнеса.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Button asChild size="lg" className="w-full sm:w-auto">
+                <Link to="/catalog">
+                  <Icon name="LayoutGrid" size={18} className="mr-2" />
+                  Смотреть каталог
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+                <Link to="/configurator">
+                  <Icon name="Cpu" size={18} className="mr-2" />
+                  Собрать ПК
+                </Link>
+              </Button>
             </div>
           </div>
 
-          <div className="mx-auto mt-20 grid max-w-4xl grid-cols-2 gap-6 md:grid-cols-4">
+          <div className="mt-20 grid max-w-4xl grid-cols-2 gap-6 md:grid-cols-4">
             {stats.map((s) => (
-              <div key={s.label} className="text-center">
+              <div key={s.label} className="text-center lg:text-left">
                 <div className="font-heading text-3xl font-bold text-primary md:text-4xl">{s.value}</div>
                 <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{s.label}</div>
               </div>
