@@ -10,10 +10,12 @@ const Footer = () => {
       <div className="container-page py-12">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Link to="/" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-gradient-to-br from-primary to-accent">
-                <Icon name="Cpu" size={20} className="text-primary-foreground" />
-              </div>
+            <Link to="/" className="flex items-center gap-2.5">
+              <img
+                src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/c72fd3c0-7a01-4c2c-936a-c2c8a39fcd85.jpg"
+                alt="RazPC"
+                className="h-10 w-10 rounded-lg object-cover ring-1 ring-border"
+              />
               <span className="font-heading text-lg font-bold tracking-wide">
                 {siteInfo.name}
               </span>

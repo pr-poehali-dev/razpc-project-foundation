@@ -20,10 +20,12 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
       <div className="container-page flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-gradient-to-br from-primary to-accent">
-            <Icon name="Cpu" size={20} className="text-primary-foreground" />
-          </div>
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <img
+            src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/c72fd3c0-7a01-4c2c-936a-c2c8a39fcd85.jpg"
+            alt="RazPC"
+            className="h-10 w-10 rounded-lg object-cover ring-1 ring-border transition-transform group-hover:scale-105"
+          />
           <div className="leading-tight">
             <span className="block font-heading text-lg font-bold tracking-wide">
               {siteInfo.name}
