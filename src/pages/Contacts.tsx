@@ -10,12 +10,14 @@ const Contacts = () => {
         title="Контакты"
         description="Свяжитесь с нами удобным способом. Здесь появятся адрес на карте, телефоны, режим работы и форма обратной связи."
       />
-      <section className="container-page py-16">
-        <EmptyState
-          icon="MapPin"
-          title="Раздел в разработке"
-          description="Скоро здесь появятся контакты и форма связи."
-        />
+      <section className="brand-smoke py-16">
+        <div className="container-page">
+          <EmptyState
+            icon="MapPin"
+            title="Раздел в разработке"
+            description="Скоро здесь появятся контакты и форма связи."
+          />
+        </div>
       </section>
     </>
   );

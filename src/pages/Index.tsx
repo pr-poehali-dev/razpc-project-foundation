@@ -81,7 +81,8 @@ const Index = () => {
       </section>
 
       {/* Services */}
-      <section className="container-page py-20">
+      <section className="brand-smoke relative py-20">
+        <div className="container-page relative">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold md:text-4xl">Наши услуги</h2>
           <p className="mt-3 text-muted-foreground">
@@ -101,6 +102,7 @@ const Index = () => {
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
             </div>
           ))}
+        </div>
         </div>
       </section>
 
@@ -149,8 +151,8 @@ const Index = () => {
 
       {/* CTA */}
       <section className="container-page py-20">
-        <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-10 text-center md:p-16">
-          <div className="absolute inset-0 grid-tech opacity-20" />
+        <div className="brand-smoke relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-10 text-center md:p-16">
+          <div className="absolute -right-16 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-primary/10 blur-[100px]" />
           <div className="relative">
             <h2 className="font-heading text-3xl font-bold md:text-4xl">
               Готовы доверить нам свою технику?

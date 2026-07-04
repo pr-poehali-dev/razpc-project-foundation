@@ -10,12 +10,14 @@ const About = () => {
         title="О мастерской"
         description="Кто мы, наша команда, ценности и подход к работе. Здесь появится история мастерской, сертификаты и рассказ о специалистах."
       />
-      <section className="container-page py-16">
-        <EmptyState
-          icon="Building2"
-          title="Раздел в разработке"
-          description="Скоро здесь будет подробная информация о мастерской."
-        />
+      <section className="brand-smoke py-16">
+        <div className="container-page">
+          <EmptyState
+            icon="Building2"
+            title="Раздел в разработке"
+            description="Скоро здесь будет подробная информация о мастерской."
+          />
+        </div>
       </section>
     </>
   );

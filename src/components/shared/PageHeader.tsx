@@ -9,9 +9,10 @@ interface PageHeaderProps {
 
 const PageHeader = ({ icon, title, description, eyebrow }: PageHeaderProps) => {
   return (
-    <section className="relative overflow-hidden border-b border-border bg-card">
-      <div className="absolute inset-0 grid-tech opacity-40" />
-      <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+    <section className="brand-smoke relative overflow-hidden border-b border-border bg-card">
+      <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/10 blur-[90px]" />
+      <div className="absolute -left-10 bottom-0 h-40 w-72 rounded-full bg-primary/[0.06] blur-[80px]" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
       <div className="container-page relative py-16 md:py-20">
         <div className="max-w-3xl animate-fade-in">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1.5">

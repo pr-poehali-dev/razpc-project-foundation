@@ -10,12 +10,14 @@ const Reviews = () => {
         title="Отзывы клиентов"
         description="Мнения наших клиентов о качестве работы и сервисе. Здесь появятся отзывы с оценками и возможностью оставить свой."
       />
-      <section className="container-page py-16">
-        <EmptyState
-          icon="Star"
-          title="Раздел в разработке"
-          description="Скоро здесь появятся отзывы клиентов."
-        />
+      <section className="brand-smoke py-16">
+        <div className="container-page">
+          <EmptyState
+            icon="Star"
+            title="Раздел в разработке"
+            description="Скоро здесь появятся отзывы клиентов."
+          />
+        </div>
       </section>
     </>
   );
