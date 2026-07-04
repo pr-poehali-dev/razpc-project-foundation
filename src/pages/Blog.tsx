@@ -1,4 +1,5 @@
-import PageHeader from '@/components/shared/PageHeader';
+import { PageHeader } from '@/components/shared';
+import { EmptyState } from '@/components/ui';
 
 const Blog = () => {
   return (
@@ -10,9 +11,11 @@ const Blog = () => {
         description="Статьи, гайды и новости из мира компьютерной техники. Здесь появится лента публикаций с категориями и поиском."
       />
       <section className="container-page py-16">
-        <div className="rounded-lg border border-dashed border-border bg-card/50 p-10 text-center text-muted-foreground">
-          Раздел в разработке — скоро здесь появятся полезные статьи.
-        </div>
+        <EmptyState
+          icon="Newspaper"
+          title="Раздел в разработке"
+          description="Скоро здесь появятся полезные статьи."
+        />
       </section>
     </>
   );

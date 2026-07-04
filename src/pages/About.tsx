@@ -1,4 +1,5 @@
-import PageHeader from '@/components/shared/PageHeader';
+import { PageHeader } from '@/components/shared';
+import { EmptyState } from '@/components/ui';
 
 const About = () => {
   return (
@@ -10,9 +11,11 @@ const About = () => {
         description="Кто мы, наша команда, ценности и подход к работе. Здесь появится история мастерской, сертификаты и рассказ о специалистах."
       />
       <section className="container-page py-16">
-        <div className="rounded-lg border border-dashed border-border bg-card/50 p-10 text-center text-muted-foreground">
-          Раздел в разработке — скоро здесь будет подробная информация о мастерской.
-        </div>
+        <EmptyState
+          icon="Building2"
+          title="Раздел в разработке"
+          description="Скоро здесь будет подробная информация о мастерской."
+        />
       </section>
     </>
   );

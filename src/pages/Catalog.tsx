@@ -1,4 +1,5 @@
-import PageHeader from '@/components/shared/PageHeader';
+import { PageHeader } from '@/components/shared';
+import { EmptyState } from '@/components/ui';
 
 const Catalog = () => {
   return (
@@ -10,9 +11,11 @@ const Catalog = () => {
         description="Комплектующие, готовые сборки и услуги мастерской. Здесь появится каталог с фильтрацией по категориям, цене и характеристикам."
       />
       <section className="container-page py-16">
-        <div className="rounded-lg border border-dashed border-border bg-card/50 p-10 text-center text-muted-foreground">
-          Раздел в разработке — скоро здесь будет система отображения товаров с фильтрами.
-        </div>
+        <EmptyState
+          icon="LayoutGrid"
+          title="Раздел в разработке"
+          description="Скоро здесь будет система отображения товаров с фильтрами по категориям, цене и характеристикам."
+        />
       </section>
     </>
   );

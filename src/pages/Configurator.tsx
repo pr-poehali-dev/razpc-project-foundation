@@ -1,4 +1,5 @@
-import PageHeader from '@/components/shared/PageHeader';
+import { PageHeader } from '@/components/shared';
+import { EmptyState } from '@/components/ui';
 
 const Configurator = () => {
   return (
@@ -10,9 +11,11 @@ const Configurator = () => {
         description="Соберите компьютер под свои задачи. Здесь появится пошаговый подбор комплектующих с проверкой совместимости и расчётом стоимости."
       />
       <section className="container-page py-16">
-        <div className="rounded-lg border border-dashed border-border bg-card/50 p-10 text-center text-muted-foreground">
-          Раздел в разработке — скоро здесь будет интерактивный конфигуратор.
-        </div>
+        <EmptyState
+          icon="Cpu"
+          title="Раздел в разработке"
+          description="Скоро здесь будет интерактивный конфигуратор."
+        />
       </section>
     </>
   );
