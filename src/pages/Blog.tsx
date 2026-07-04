@@ -1,4 +1,4 @@
-import { PageHeader } from '@/components/shared';
+import { PageHeader, BrandBackdrop } from '@/components/shared';
 import { EmptyState } from '@/components/ui';
 
 const Blog = () => {
@@ -10,7 +10,8 @@ const Blog = () => {
         title="Блог мастерской"
         description="Статьи, гайды и новости из мира компьютерной техники. Здесь появится лента публикаций с категориями и поиском."
       />
-      <section className="brand-smoke py-16">
+      <section className="relative overflow-hidden py-16">
+        <BrandBackdrop smokeOpacity={0.3} />
         <div className="container-page">
           <EmptyState
             icon="Newspaper"

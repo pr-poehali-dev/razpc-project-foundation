@@ -1,4 +1,4 @@
-import { PageHeader } from '@/components/shared';
+import { PageHeader, BrandBackdrop } from '@/components/shared';
 import { EmptyState } from '@/components/ui';
 
 const Catalog = () => {
@@ -10,7 +10,8 @@ const Catalog = () => {
         title="Каталог товаров и услуг"
         description="Комплектующие, готовые сборки и услуги мастерской. Здесь появится каталог с фильтрацией по категориям, цене и характеристикам."
       />
-      <section className="brand-smoke py-16">
+      <section className="relative overflow-hidden py-16">
+        <BrandBackdrop smokeOpacity={0.3} />
         <div className="container-page">
           <EmptyState
             icon="LayoutGrid"

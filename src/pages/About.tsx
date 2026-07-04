@@ -1,4 +1,4 @@
-import { PageHeader } from '@/components/shared';
+import { PageHeader, BrandBackdrop } from '@/components/shared';
 import { EmptyState } from '@/components/ui';
 
 const About = () => {
@@ -10,7 +10,8 @@ const About = () => {
         title="О мастерской"
         description="Кто мы, наша команда, ценности и подход к работе. Здесь появится история мастерской, сертификаты и рассказ о специалистах."
       />
-      <section className="brand-smoke py-16">
+      <section className="relative overflow-hidden py-16">
+        <BrandBackdrop smokeOpacity={0.3} />
         <div className="container-page">
           <EmptyState
             icon="Building2"

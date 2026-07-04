@@ -1,4 +1,5 @@
 export { default as PageHeader } from './PageHeader';
+export { default as BrandBackdrop } from './BrandBackdrop';
 export { default as ProductCard } from './ProductCard';
 export { default as WorkCard } from './WorkCard';
 export { default as ArticleCard } from './ArticleCard';

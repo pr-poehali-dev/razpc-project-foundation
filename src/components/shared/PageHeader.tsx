@@ -1,4 +1,5 @@
 import Icon from '@/components/ui/icon';
+import BrandBackdrop from './BrandBackdrop';
 
 interface PageHeaderProps {
   icon: string;
@@ -9,9 +10,8 @@ interface PageHeaderProps {
 
 const PageHeader = ({ icon, title, description, eyebrow }: PageHeaderProps) => {
   return (
-    <section className="brand-smoke relative overflow-hidden border-b border-border bg-card">
-      <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/10 blur-[90px]" />
-      <div className="absolute -left-10 bottom-0 h-40 w-72 rounded-full bg-primary/[0.06] blur-[80px]" />
+    <section className="relative overflow-hidden border-b border-border bg-card">
+      <BrandBackdrop smokeOpacity={0.45} />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
       <div className="container-page relative py-16 md:py-20">
         <div className="max-w-3xl animate-fade-in">

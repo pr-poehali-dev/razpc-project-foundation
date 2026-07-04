@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
+import { BrandBackdrop } from '@/components/shared';
 import { siteInfo } from '@/config/navigation';
 
 const stats = [
@@ -81,7 +82,8 @@ const Index = () => {
       </section>
 
       {/* Services */}
-      <section className="brand-smoke relative py-20">
+      <section className="relative overflow-hidden py-20">
+        <BrandBackdrop smokeOpacity={0.3} />
         <div className="container-page relative">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-bold md:text-4xl">Наши услуги</h2>
@@ -151,8 +153,8 @@ const Index = () => {
 
       {/* CTA */}
       <section className="container-page py-20">
-        <div className="brand-smoke relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-10 text-center md:p-16">
-          <div className="absolute -right-16 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-primary/10 blur-[100px]" />
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-10 text-center md:p-16">
+          <BrandBackdrop smokeOpacity={0.35} />
           <div className="relative">
             <h2 className="font-heading text-3xl font-bold md:text-4xl">
               Готовы доверить нам свою технику?
