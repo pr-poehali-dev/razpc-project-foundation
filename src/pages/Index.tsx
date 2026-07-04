@@ -28,42 +28,55 @@ const Index = () => {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url(https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/14b76b1f-4f43-48bc-ae73-555b03711e9a.jpg)' }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/50" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
-        <div className="absolute left-1/4 top-1/4 h-[400px] w-[500px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
-        <div className="container-page relative py-24 md:py-32">
-          <div className="max-w-2xl animate-fade-in">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 backdrop-blur-sm">
-              <span className="flex h-2 w-2 rounded-full bg-primary" />
-              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Компьютерная мастерская нового уровня
-              </span>
+        <div className="absolute inset-0 grid-tech opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
+        {/* Световые акценты */}
+        <div className="absolute right-0 top-1/2 h-[600px] w-[600px] -translate-y-1/2 translate-x-1/4 rounded-full bg-primary/15 blur-[130px]" />
+        <div className="absolute -bottom-40 right-1/4 h-[400px] w-[500px] rounded-full bg-orange-500/10 blur-[120px]" />
+
+        <div className="container-page relative py-20 md:py-28">
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+            {/* Текст */}
+            <div className="animate-fade-in text-center lg:text-left">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 backdrop-blur-sm">
+                <span className="flex h-2 w-2 rounded-full bg-primary" />
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Компьютерная мастерская нового уровня
+                </span>
+              </div>
+              <h1 className="font-heading text-5xl font-bold leading-[1.05] md:text-6xl xl:text-7xl">
+                Надёжные решения для<br />
+                <span className="text-gradient">вашей техники</span>
+              </h1>
+              <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground lg:mx-0">
+                {siteInfo.name} — ремонт, сборка и обслуживание компьютеров с гарантией результата.
+                Работаем для частных клиентов и бизнеса.
+              </p>
+              <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row lg:justify-start">
+                <Button asChild size="lg" className="w-full sm:w-auto">
+                  <Link to="/catalog">
+                    <Icon name="LayoutGrid" size={18} className="mr-2" />
+                    Смотреть каталог
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
+                  <Link to="/configurator">
+                    <Icon name="Cpu" size={18} className="mr-2" />
+                    Собрать ПК
+                  </Link>
+                </Button>
+              </div>
             </div>
-            <h1 className="font-heading text-5xl font-bold leading-[1.05] md:text-7xl">
-              Надёжные решения для<br />
-              <span className="text-gradient">вашей техники</span>
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              {siteInfo.name} — ремонт, сборка и обслуживание компьютеров с гарантией результата.
-              Работаем для частных клиентов и бизнеса.
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button asChild size="lg" className="w-full sm:w-auto">
-                <Link to="/catalog">
-                  <Icon name="LayoutGrid" size={18} className="mr-2" />
-                  Смотреть каталог
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-                <Link to="/configurator">
-                  <Icon name="Cpu" size={18} className="mr-2" />
-                  Собрать ПК
-                </Link>
-              </Button>
+
+            {/* Компьютер */}
+            <div className="relative flex justify-center lg:justify-end">
+              {/* Свечение под корпусом */}
+              <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/25 blur-[100px]" />
+              <img
+                src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/hero/razpc-cutout.png"
+                alt="Игровой ПК RazPC"
+                className="relative z-10 max-h-[560px] w-auto animate-scale-in drop-shadow-2xl"
+              />
             </div>
           </div>
 
