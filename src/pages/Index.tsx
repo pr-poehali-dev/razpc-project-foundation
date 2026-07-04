@@ -28,12 +28,17 @@ const Index = () => {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 grid-tech opacity-30" />
-        <div className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: 'url(https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/14b76b1f-4f43-48bc-ae73-555b03711e9a.jpg)' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/40" />
+        <div className="absolute left-1/4 top-1/4 h-[400px] w-[500px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
         <div className="container-page relative py-24 md:py-32">
-          <div className="mx-auto max-w-3xl text-center animate-fade-in">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5">
-              <span className="flex h-2 w-2 rounded-full bg-accent" />
+          <div className="max-w-2xl animate-fade-in">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 backdrop-blur-sm">
+              <span className="flex h-2 w-2 rounded-full bg-primary" />
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Компьютерная мастерская нового уровня
               </span>
@@ -42,11 +47,11 @@ const Index = () => {
               Надёжные решения для<br />
               <span className="text-gradient">вашей техники</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
               {siteInfo.name} — ремонт, сборка и обслуживание компьютеров с гарантией результата.
               Работаем для частных клиентов и бизнеса.
             </p>
-            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link to="/catalog">
                   <Icon name="LayoutGrid" size={18} className="mr-2" />
