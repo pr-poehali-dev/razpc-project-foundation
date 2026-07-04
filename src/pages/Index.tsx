@@ -28,14 +28,10 @@ const Index = () => {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 grid-tech opacity-20" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background" />
-        {/* Световые акценты */}
-        <div className="absolute right-0 top-1/2 h-[600px] w-[600px] -translate-y-1/2 translate-x-1/4 rounded-full bg-primary/15 blur-[130px]" />
-        <div className="absolute -bottom-40 right-1/4 h-[400px] w-[500px] rounded-full bg-orange-500/10 blur-[120px]" />
 
         <div className="container-page relative py-20 md:py-28">
-          <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div className="grid items-center gap-12 lg:grid-cols-[52%_48%] lg:gap-8">
             {/* Текст */}
             <div className="animate-fade-in text-center lg:text-left">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-4 py-1.5 backdrop-blur-sm">
@@ -68,19 +64,21 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Компьютер */}
-            <div className="relative flex justify-center lg:justify-end">
-              {/* Свечение под корпусом */}
-              <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/25 blur-[100px]" />
+            {/* Компьютер — главный акцент */}
+            <div className="relative flex items-end justify-center lg:justify-end">
+              {/* Деликатное красное свечение позади корпуса */}
+              <div className="pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-red-600/12 blur-[140px]" />
+              {/* Мягкая тень-опора под корпусом */}
+              <div className="pointer-events-none absolute bottom-2 left-1/2 h-10 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/60 blur-2xl" />
               <img
-                src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/hero/razpc-cutout.png"
+                src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/hero/razpc-hero-v2.png"
                 alt="Игровой ПК RazPC"
-                className="relative z-10 max-h-[560px] w-auto animate-scale-in drop-shadow-2xl"
+                className="relative z-10 w-full max-w-[620px] animate-scale-in"
               />
             </div>
           </div>
 
-          <div className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-6 md:grid-cols-4">
+          <div className="mx-auto mt-20 grid max-w-4xl grid-cols-2 gap-6 md:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label} className="text-center">
                 <div className="font-heading text-3xl font-bold text-primary md:text-4xl">{s.value}</div>

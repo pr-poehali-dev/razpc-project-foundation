@@ -21,7 +21,9 @@ def handler(event: dict, context) -> dict:
     if method == 'OPTIONS':
         return {'statusCode': 200, 'headers': {**cors_headers, 'Access-Control-Max-Age': '86400'}, 'body': ''}
 
-    source_url = 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/14b76b1f-4f43-48bc-ae73-555b03711e9a.jpg'
+    params = event.get('queryStringParameters') or {}
+    source_url = params.get('src') or 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/files/513e4281-f76e-4481-aecb-8e3d2068681f.jpg'
+    out_name = params.get('name') or 'razpc-hero-v2'
 
     req = urllib.request.Request(source_url, headers={'User-Agent': 'Mozilla/5.0'})
     with urllib.request.urlopen(req, timeout=60) as resp:
@@ -32,7 +34,7 @@ def handler(event: dict, context) -> dict:
     px = img.load()
 
     def is_light(r, g, b):
-        return r > 175 and g > 175 and b > 175
+        return r > 205 and g > 205 and b > 205
 
     visited = bytearray(w * h)
     q = deque()
@@ -77,7 +79,7 @@ def handler(event: dict, context) -> dict:
         aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY'],
     )
 
-    key = 'hero/razpc-cutout.png'
+    key = f'hero/{out_name}.png'
     s3.put_object(Bucket='files', Key=key, Body=png_bytes, ContentType='image/png')
 
     cdn_url = f'https://cdn.poehali.dev/projects/{access_key}/bucket/{key}'
