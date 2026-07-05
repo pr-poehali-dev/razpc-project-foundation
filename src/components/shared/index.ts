@@ -3,6 +3,7 @@ export { default as BrandBackdrop } from './BrandBackdrop';
 export { default as ProductCard } from './ProductCard';
 export { default as BuildCard } from './BuildCard';
 export { default as ConfigItem } from './ConfigItem';
+export { default as BuildConfig } from './BuildConfig';
 export { default as WorkCard } from './WorkCard';
 export { default as ArticleCard } from './ArticleCard';
 export { default as ReviewCard } from './ReviewCard';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { BrandBackdrop, ConfigItem } from '@/components/shared';
+import { BrandBackdrop, BuildConfig } from '@/components/shared';
 import {
   Spinner, EmptyState, Button, Badge, Icon,
   Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
@@ -55,15 +55,6 @@ const BuildDetail = () => {
   }
 
   const inStock = build.status === 'in_stock';
-
-  const byType = (types: string[]) =>
-    types
-      .map((t) => build.components.find((c) => c.type === t))
-      .filter((c): c is NonNullable<typeof c> => Boolean(c));
-
-  const tier1 = byType(['CPU', 'GPU']);
-  const tier2 = byType(['RAM', 'SSD']);
-  const tier3 = byType(['MOTHERBOARD', 'PSU', 'CASE']);
 
   return (
     <>
@@ -176,32 +167,7 @@ const BuildDetail = () => {
             </span>
           </div>
 
-          {/* 1 уровень — сердце системы: CPU и GPU */}
-          {tier1.length > 0 && (
-            <div className="mb-5 grid gap-5 md:grid-cols-2">
-              {tier1.map((c) => (
-                <ConfigItem key={c.type} component={c} tier={1} />
-              ))}
-            </div>
-          )}
-
-          {/* 2 уровень — память и накопитель */}
-          {tier2.length > 0 && (
-            <div className="mb-5 grid gap-4 sm:grid-cols-2">
-              {tier2.map((c) => (
-                <ConfigItem key={c.type} component={c} tier={2} />
-              ))}
-            </div>
-          )}
-
-          {/* 3 уровень — платформа, питание, корпус */}
-          {tier3.length > 0 && (
-            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-              {tier3.map((c) => (
-                <ConfigItem key={c.type} component={c} tier={3} />
-              ))}
-            </div>
-          )}
+          <BuildConfig components={build.components} />
 
           <div className="mt-12 flex justify-center">
             <Button asChild variant="outline">
