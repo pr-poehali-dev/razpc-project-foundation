@@ -8,6 +8,8 @@ export interface BuildComponent {
   brand: string;
   name: string;
   spec: string;
+  role?: string | null;
+  key_specs?: string[];
 }
 
 export interface BuildListItem {

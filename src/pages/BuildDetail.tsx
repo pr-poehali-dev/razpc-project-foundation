@@ -56,6 +56,15 @@ const BuildDetail = () => {
 
   const inStock = build.status === 'in_stock';
 
+  const byType = (types: string[]) =>
+    types
+      .map((t) => build.components.find((c) => c.type === t))
+      .filter((c): c is NonNullable<typeof c> => Boolean(c));
+
+  const tier1 = byType(['CPU', 'GPU']);
+  const tier2 = byType(['RAM', 'SSD']);
+  const tier3 = byType(['MOTHERBOARD', 'PSU', 'CASE']);
+
   return (
     <>
       {/* Верхний блок */}
@@ -160,20 +169,41 @@ const BuildDetail = () => {
       <section className="relative overflow-hidden py-16">
         <BrandBackdrop smokeOpacity={0.2} arcs={false} />
         <div className="container-page relative">
-          <div className="mb-8 flex items-center gap-3">
+          <div className="mb-10 flex items-center gap-3">
             <h2 className="font-heading text-2xl font-bold md:text-3xl">Конфигурация</h2>
             <span className="rounded-full bg-secondary px-3 py-1 text-sm text-muted-foreground">
               {build.components.length} компонентов
             </span>
           </div>
 
-          <div className="grid gap-3 lg:grid-cols-2">
-            {build.components.map((c) => (
-              <ConfigItem key={c.type} component={c} />
-            ))}
-          </div>
+          {/* 1 уровень — сердце системы: CPU и GPU */}
+          {tier1.length > 0 && (
+            <div className="mb-5 grid gap-5 md:grid-cols-2">
+              {tier1.map((c) => (
+                <ConfigItem key={c.type} component={c} tier={1} />
+              ))}
+            </div>
+          )}
 
-          <div className="mt-10 flex justify-center">
+          {/* 2 уровень — память и накопитель */}
+          {tier2.length > 0 && (
+            <div className="mb-5 grid gap-4 sm:grid-cols-2">
+              {tier2.map((c) => (
+                <ConfigItem key={c.type} component={c} tier={2} />
+              ))}
+            </div>
+          )}
+
+          {/* 3 уровень — платформа, питание, корпус */}
+          {tier3.length > 0 && (
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {tier3.map((c) => (
+                <ConfigItem key={c.type} component={c} tier={3} />
+              ))}
+            </div>
+          )}
+
+          <div className="mt-12 flex justify-center">
             <Button asChild variant="outline">
               <Link to="/catalog">
                 <Icon name="ArrowLeft" size={16} className="mr-1" />

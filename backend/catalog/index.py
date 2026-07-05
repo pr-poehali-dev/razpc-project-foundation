@@ -99,7 +99,7 @@ def _get_build_detail(cur, slug):
 
     cur.execute(
         '''
-        SELECT c.type, c.brand, c.name, c.spec, bc.position
+        SELECT c.type, c.brand, c.name, c.spec, c.role, c.key_specs, bc.position
         FROM build_components bc
         JOIN components c ON c.id = bc.component_id
         WHERE bc.build_id = %s
@@ -108,7 +108,14 @@ def _get_build_detail(cur, slug):
         (build['id'],),
     )
     build['components'] = [
-        {'type': r['type'], 'brand': r['brand'], 'name': r['name'], 'spec': r['spec']}
+        {
+            'type': r['type'],
+            'brand': r['brand'],
+            'name': r['name'],
+            'spec': r['spec'],
+            'role': r['role'],
+            'key_specs': [s for s in (r['key_specs'] or '').split(';') if s],
+        }
         for r in cur.fetchall()
     ]
     return build
