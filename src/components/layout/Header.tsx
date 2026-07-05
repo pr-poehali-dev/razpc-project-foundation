@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { mainNav, siteInfo } from '@/config/navigation';
+import { useAuth } from '@/context/AuthContext';
 import {
   Sheet,
   SheetContent,
@@ -11,6 +12,7 @@ import {
 
 const Header = () => {
   const [open, setOpen] = useState(false);
+  const { user, isStaff } = useAuth();
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-medium transition-colors hover:text-primary ${
@@ -45,18 +47,39 @@ const Header = () => {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Button asChild variant="ghost" size="sm">
-            <Link to="/login">
-              <Icon name="LogIn" size={16} className="mr-1.5" />
-              Вход
-            </Link>
-          </Button>
-          <Button asChild size="sm">
-            <Link to="/account">
-              <Icon name="User" size={16} className="mr-1.5" />
-              Кабинет
-            </Link>
-          </Button>
+          {user ? (
+            <>
+              {isStaff && (
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/admin">
+                    <Icon name="LayoutDashboard" size={16} className="mr-1.5" />
+                    Админка
+                  </Link>
+                </Button>
+              )}
+              <Button asChild size="sm">
+                <Link to="/account">
+                  <Icon name="User" size={16} className="mr-1.5" />
+                  Кабинет
+                </Link>
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/login">
+                  <Icon name="LogIn" size={16} className="mr-1.5" />
+                  Вход
+                </Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link to="/register">
+                  <Icon name="UserPlus" size={16} className="mr-1.5" />
+                  Регистрация
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -86,18 +109,39 @@ const Header = () => {
                 </NavLink>
               ))}
               <div className="my-3 h-px bg-border" />
-              <Button asChild variant="outline" className="justify-start" onClick={() => setOpen(false)}>
-                <Link to="/login">
-                  <Icon name="LogIn" size={18} className="mr-2" />
-                  Вход
-                </Link>
-              </Button>
-              <Button asChild className="justify-start" onClick={() => setOpen(false)}>
-                <Link to="/account">
-                  <Icon name="User" size={18} className="mr-2" />
-                  Личный кабинет
-                </Link>
-              </Button>
+              {user ? (
+                <>
+                  {isStaff && (
+                    <Button asChild variant="outline" className="justify-start" onClick={() => setOpen(false)}>
+                      <Link to="/admin">
+                        <Icon name="LayoutDashboard" size={18} className="mr-2" />
+                        Админ-панель
+                      </Link>
+                    </Button>
+                  )}
+                  <Button asChild className="justify-start" onClick={() => setOpen(false)}>
+                    <Link to="/account">
+                      <Icon name="User" size={18} className="mr-2" />
+                      Личный кабинет
+                    </Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button asChild variant="outline" className="justify-start" onClick={() => setOpen(false)}>
+                    <Link to="/login">
+                      <Icon name="LogIn" size={18} className="mr-2" />
+                      Вход
+                    </Link>
+                  </Button>
+                  <Button asChild className="justify-start" onClick={() => setOpen(false)}>
+                    <Link to="/register">
+                      <Icon name="UserPlus" size={18} className="mr-2" />
+                      Регистрация
+                    </Link>
+                  </Button>
+                </>
+              )}
             </div>
           </SheetContent>
         </Sheet>
