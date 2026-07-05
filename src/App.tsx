@@ -31,6 +31,11 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminLeads from "./pages/admin/AdminLeads";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminWarehouse from "./pages/admin/AdminWarehouse";
+import AdminWarehouseItems from "./pages/admin/AdminWarehouseItems";
+import AdminWarehouseItem from "./pages/admin/AdminWarehouseItem";
+import AdminWarehouseAudits from "./pages/admin/AdminWarehouseAudits";
+import AdminWarehouseAudit from "./pages/admin/AdminWarehouseAudit";
 
 const queryClient = new QueryClient();
 
@@ -124,6 +129,46 @@ const App = () => (
                 element={
                   <ProtectedRoute roles={["admin", "manager"]}>
                     <AdminAnalytics />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouse />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/items"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseItems />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/items/:id"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseItem />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/audits"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseAudits />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/audits/:id"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseAudit />
                   </ProtectedRoute>
                 }
               />

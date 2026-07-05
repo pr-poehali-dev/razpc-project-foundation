@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { roleLabels } from '@/api/auth';
 
 const cards = [
+  { title: 'Склад', desc: 'Товары, остатки и движения', icon: 'Package', path: '/admin/warehouse', roles: ['admin', 'manager'] },
   { title: 'Каталог', desc: 'Сборки и комплектующие', icon: 'LayoutGrid', path: '/admin/catalog', roles: ['admin', 'builder'] },
   { title: 'Заявки', desc: 'Заказы и обращения с сайта', icon: 'Inbox', path: '/admin/orders', roles: ['admin', 'manager'] },
   { title: 'Пользователи', desc: 'Роли и права доступа', icon: 'Users', path: '/admin/users', roles: ['admin'] },

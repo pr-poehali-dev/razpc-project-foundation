@@ -9,6 +9,7 @@ interface NavItem {
   path: string;
   icon: string;
   roles?: UserRole[];
+  end?: boolean;
 }
 
 const adminNav: NavItem[] = [
@@ -16,6 +17,8 @@ const adminNav: NavItem[] = [
   { label: 'Заказы', path: '/admin/orders', icon: 'ShoppingCart', roles: ['admin', 'manager'] },
   { label: 'Заявки', path: '/admin/leads', icon: 'Inbox', roles: ['admin', 'manager'] },
   { label: 'Клиенты', path: '/admin/customers', icon: 'Users2', roles: ['admin', 'manager'] },
+  { label: 'Склад', path: '/admin/warehouse', icon: 'Package', roles: ['admin', 'manager'], end: true },
+  { label: 'Инвентаризация', path: '/admin/warehouse/audits', icon: 'ClipboardCheck', roles: ['admin', 'manager'] },
   { label: 'Аналитика', path: '/admin/analytics', icon: 'BarChart3', roles: ['admin', 'manager'] },
   { label: 'Каталог', path: '/admin/catalog', icon: 'LayoutGrid', roles: ['admin', 'builder'] },
   { label: 'Пользователи', path: '/admin/users', icon: 'Users', roles: ['admin'] },
@@ -51,7 +54,7 @@ const AdminLayout = () => {
             <NavLink
               key={item.path}
               to={item.path}
-              end={item.path === '/admin'}
+              end={item.path === '/admin' || item.end}
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
@@ -99,7 +102,7 @@ const AdminLayout = () => {
               <NavLink
                 key={item.path}
                 to={item.path}
-                end={item.path === '/admin'}
+                end={item.path === '/admin' || item.end}
                 className={({ isActive }) =>
                   cn(
                     'flex h-9 w-9 items-center justify-center rounded-lg',

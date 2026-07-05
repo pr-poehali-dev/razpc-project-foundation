@@ -1,0 +1,49 @@
+{
+  "tests": [
+    {
+      "name": "Dashboard without token returns 401",
+      "method": "GET",
+      "path": "/?resource=dashboard",
+      "expectedStatus": 401
+    },
+    {
+      "name": "Items list without token returns 401",
+      "method": "GET",
+      "path": "/?resource=items",
+      "expectedStatus": 401
+    },
+    {
+      "name": "Refs without token returns 401",
+      "method": "GET",
+      "path": "/?resource=refs",
+      "expectedStatus": 401
+    },
+    {
+      "name": "Create item without token returns 401",
+      "method": "POST",
+      "path": "/?resource=items",
+      "body": {"name": "Test"},
+      "expectedStatus": 401
+    },
+    {
+      "name": "Operation without token returns 401",
+      "method": "POST",
+      "path": "/?resource=operation",
+      "body": {"operation": "income", "item_id": 1, "qty": 1},
+      "expectedStatus": 401
+    },
+    {
+      "name": "Unknown resource with bad token returns 401",
+      "method": "GET",
+      "path": "/?resource=bogus",
+      "headers": {"X-Auth-Token": "invalid-token-xyz"},
+      "expectedStatus": 401
+    },
+    {
+      "name": "OPTIONS returns 200",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}
