@@ -25,34 +25,12 @@ const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
       <div className="container-page flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 group">
-          <svg
-            viewBox="0 0 100 100"
-            role="img"
-            aria-label="RazPC"
+          <img
+            src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/6399f6b1-744f-495d-8c3a-9de50d7b98dd.PNG"
+            alt="RazPC"
             className="h-10 w-10 object-contain transition-transform group-hover:scale-105"
-          >
-            {/* Верхняя дуга буквы R (белая) */}
-            <path
-              d="M30 18 H62 A20 20 0 0 1 62 58 H46 L64 82 H50 L34 60 V48 H60 A8 8 0 0 0 60 32 H42 V82 H30 Z"
-              fill="#FFFFFF"
-            />
-            {/* Левая «объёмная» грань (контур) */}
-            <path
-              d="M30 18 L20 28 V72 L30 82 V18 Z"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="3"
-              strokeLinejoin="round"
-            />
-            {/* Жёлтая диагональная ножка */}
-            <path
-              d="M44 50 H60 L74 74 H58 Z"
-              fill="hsl(var(--primary))"
-              stroke="#FFFFFF"
-              strokeWidth="2"
-              strokeLinejoin="round"
-            />
-          </svg>
+            style={{ filter: 'invert(1) hue-rotate(180deg)' }}
+          />
           <div className="leading-tight">
             <span className="block font-heading text-lg font-bold tracking-wide">
               {siteInfo.name}
