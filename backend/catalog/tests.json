@@ -1,0 +1,18 @@
+{
+  "tests": [
+    {
+      "name": "List all builds",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "Get build detail by slug",
+      "method": "GET",
+      "path": "/?slug=razpc-titan",
+      "expectedStatus": 200,
+      "expectedBody": {"slug": "razpc-titan"},
+      "bodyMatcher": "partial"
+    }
+  ]
+}

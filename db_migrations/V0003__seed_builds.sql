@@ -1,0 +1,7 @@
+-- Sborki RazPC
+
+INSERT INTO builds (slug, name, tagline, price, old_price, image_url, tier, performance_badge, status, warranty, is_featured, sort_order) VALUES
+('razpc-storm', 'RazPC Storm', 'Idealniy start dlya kibersporta i Full HD igr', 129900, 144900, 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/files/af65467d-e2b3-44fe-b3b5-254a71024366.jpg', '1080p / 1440p', '144+ FPS v 1080p', 'in_stock', '3 goda', FALSE, 10),
+('razpc-titan', 'RazPC Titan', 'Sbalansirovannaya moshch dlya igr v 1440p', 189900, 214900, 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/files/626ce89c-f444-4668-917c-4f56a25bd074.jpg', '1440p', '165+ FPS v 1440p', 'in_stock', '3 goda', TRUE, 20),
+('razpc-ultra', 'RazPC Ultra', 'Maksimalnaya proizvoditelnost v 4K', 274900, NULL, 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/files/a7977ace-8893-4dc5-abc0-644a380d4cad.jpg', '4K', '120+ FPS v 4K', 'in_stock', '3 goda', TRUE, 30),
+('razpc-apex', 'RazPC Apex', 'Flagman bez kompromissov dlya 4K i tvorchestva', 399900, NULL, 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/files/32bdf851-832b-43eb-897b-c9a785c6409b.jpg', '4K', 'Ultra 4K / 240 Hz', 'on_order', '3 goda', TRUE, 40);
