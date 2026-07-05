@@ -9,6 +9,7 @@ export { default as WorkCard } from './WorkCard';
 export { default as ArticleCard } from './ArticleCard';
 export { default as ReviewCard } from './ReviewCard';
 export { default as InfoCard } from './InfoCard';
+export { default as LeadForm } from './LeadForm';
 
 export type { ProductCardProps } from './ProductCard';
 export type { WorkCardProps } from './WorkCard';

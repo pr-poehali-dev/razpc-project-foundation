@@ -1,0 +1,32 @@
+{
+  "tests": [
+    {
+      "name": "Orders require auth",
+      "method": "GET",
+      "path": "/?resource=orders",
+      "expectedStatus": 403
+    },
+    {
+      "name": "Public lead create validates contact",
+      "method": "POST",
+      "path": "/?resource=lead",
+      "body": {"name": "Test"},
+      "expectedStatus": 400
+    },
+    {
+      "name": "Public lead create works",
+      "method": "POST",
+      "path": "/?resource=lead",
+      "body": {"name": "Тест Клиент", "phone": "+79001234567", "source": "site_buy", "message": "Хочу купить"},
+      "expectedStatus": 200,
+      "expectedBody": {"ok": true},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Stats require auth",
+      "method": "GET",
+      "path": "/?resource=stats",
+      "expectedStatus": 403
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { BrandBackdrop } from '@/components/shared';
+import { BrandBackdrop, LeadForm } from '@/components/shared';
 import SlideEditor from '@/components/editor/slides/SlideEditor';
 import {
   Spinner, EmptyState, Button, Badge, Icon,
@@ -27,6 +27,7 @@ const BuildDetail = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [archiving, setArchiving] = useState(false);
+  const [leadOpen, setLeadOpen] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -255,12 +256,7 @@ const BuildDetail = () => {
                 <Button
                   size="lg"
                   className="w-full sm:w-auto"
-                  onClick={() =>
-                    toast({
-                      title: 'Заявка принята',
-                      description: `Мы свяжемся с вами по сборке «${build.name}».`,
-                    })
-                  }
+                  onClick={() => setLeadOpen(true)}
                 >
                   <Icon name="ShoppingCart" size={18} className="mr-1" />
                   Заказать
@@ -300,6 +296,16 @@ const BuildDetail = () => {
           </div>
         </div>
       </section>
+
+      <LeadForm
+        open={leadOpen}
+        onClose={() => setLeadOpen(false)}
+        title="Заказать сборку"
+        description="Оставьте телефон — менеджер свяжется с вами по этой конфигурации."
+        source="site_buy"
+        buildId={build.id}
+        buildName={build.name}
+      />
     </>
   );
 };

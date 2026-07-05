@@ -27,6 +27,9 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminCatalog from "./pages/admin/AdminCatalog";
 import AdminOrders from "./pages/admin/AdminOrders";
+import AdminLeads from "./pages/admin/AdminLeads";
+import AdminCustomers from "./pages/admin/AdminCustomers";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -95,6 +98,30 @@ const App = () => (
                 element={
                   <ProtectedRoute roles={["admin", "manager"]}>
                     <AdminOrders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="leads"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminLeads />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="customers"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminCustomers />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="analytics"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminAnalytics />
                   </ProtectedRoute>
                 }
               />

@@ -13,8 +13,11 @@ interface NavItem {
 
 const adminNav: NavItem[] = [
   { label: 'Обзор', path: '/admin', icon: 'LayoutDashboard' },
+  { label: 'Заказы', path: '/admin/orders', icon: 'ShoppingCart', roles: ['admin', 'manager'] },
+  { label: 'Заявки', path: '/admin/leads', icon: 'Inbox', roles: ['admin', 'manager'] },
+  { label: 'Клиенты', path: '/admin/customers', icon: 'Users2', roles: ['admin', 'manager'] },
+  { label: 'Аналитика', path: '/admin/analytics', icon: 'BarChart3', roles: ['admin', 'manager'] },
   { label: 'Каталог', path: '/admin/catalog', icon: 'LayoutGrid', roles: ['admin', 'builder'] },
-  { label: 'Заявки', path: '/admin/orders', icon: 'Inbox', roles: ['admin', 'manager'] },
   { label: 'Пользователи', path: '/admin/users', icon: 'Users', roles: ['admin'] },
 ];
 
