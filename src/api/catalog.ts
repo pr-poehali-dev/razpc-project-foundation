@@ -10,6 +10,7 @@ export interface BuildComponent {
   spec: string;
   role?: string | null;
   key_specs?: string[];
+  image_url?: string | null;
 }
 
 export interface BuildListItem {
@@ -29,6 +30,7 @@ export interface BuildListItem {
 }
 
 export interface BuildDetail extends Omit<BuildListItem, 'highlights' | 'is_featured'> {
+  key_tasks?: string[];
   components: BuildComponent[];
 }
 

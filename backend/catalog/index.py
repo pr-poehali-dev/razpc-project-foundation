@@ -88,7 +88,7 @@ def _get_build_detail(cur, slug):
     cur.execute(
         '''
         SELECT id, slug, name, tagline, price, old_price, image_url,
-               tier, performance_badge, status, warranty
+               tier, performance_badge, status, warranty, key_tasks
         FROM builds WHERE slug = %s
         ''',
         (slug,),
@@ -97,9 +97,11 @@ def _get_build_detail(cur, slug):
     if not build:
         return None
 
+    build['key_tasks'] = [t for t in (build.get('key_tasks') or '').split(';') if t]
+
     cur.execute(
         '''
-        SELECT c.type, c.brand, c.name, c.spec, c.role, c.key_specs, bc.position
+        SELECT c.type, c.brand, c.name, c.spec, c.role, c.key_specs, c.image_url, bc.position
         FROM build_components bc
         JOIN components c ON c.id = bc.component_id
         WHERE bc.build_id = %s
@@ -115,6 +117,7 @@ def _get_build_detail(cur, slug):
             'spec': r['spec'],
             'role': r['role'],
             'key_specs': [s for s in (r['key_specs'] or '').split(';') if s],
+            'image_url': r['image_url'],
         }
         for r in cur.fetchall()
     ]
