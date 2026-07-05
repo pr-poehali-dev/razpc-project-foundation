@@ -13,6 +13,19 @@
       "expectedStatus": 200,
       "expectedBody": {"slug": "razpc-titan"},
       "bodyMatcher": "partial"
+    },
+    {
+      "name": "Update without admin token forbidden",
+      "method": "PUT",
+      "path": "/",
+      "body": {"id": 1, "name": "hacked"},
+      "expectedStatus": 403
+    },
+    {
+      "name": "Delete without admin token forbidden",
+      "method": "DELETE",
+      "path": "/?id=1",
+      "expectedStatus": 403
     }
   ]
 }

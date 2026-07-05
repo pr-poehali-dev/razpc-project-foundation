@@ -72,7 +72,18 @@ const Catalog = () => {
 
               <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {filtered.map((b) => (
-                  <BuildCard key={b.id} build={b} />
+                  <BuildCard
+                    key={b.id}
+                    build={b}
+                    onUpdated={(patch) =>
+                      setBuilds((prev) =>
+                        prev.map((x) => (x.id === b.id ? { ...x, ...patch } : x)),
+                      )
+                    }
+                    onDeleted={() =>
+                      setBuilds((prev) => prev.filter((x) => x.id !== b.id))
+                    }
+                  />
                 ))}
               </div>
             </>

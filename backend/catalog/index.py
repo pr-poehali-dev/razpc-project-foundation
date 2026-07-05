@@ -5,46 +5,121 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 
-def handler(event: dict, context) -> dict:
-    '''API kataloga RazPC: spisok sborok i detal sborki s konfiguraciey.'''
-    method = event.get('httpMethod', 'GET')
+CORS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, X-Auth-Token',
+    'Content-Type': 'application/json',
+}
 
-    cors = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-    }
+EDITABLE_FIELDS = {
+    'name', 'tagline', 'price', 'old_price', 'image_url', 'tier',
+    'performance_badge', 'status', 'warranty', 'is_featured',
+}
 
-    if method == 'OPTIONS':
-        return {'statusCode': 200, 'headers': {**cors, 'Access-Control-Max-Age': '86400'}, 'body': ''}
 
-    params = event.get('queryStringParameters') or {}
-    slug = params.get('slug')
-
-    conn = psycopg2.connect(os.environ['DATABASE_URL'])
-    try:
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            if slug:
-                result = _get_build_detail(cur, slug)
-                if result is None:
-                    return {
-                        'statusCode': 404,
-                        'headers': {**cors, 'Content-Type': 'application/json'},
-                        'body': json.dumps({'error': 'Build not found'}),
-                        'isBase64Encoded': False,
-                    }
-                body = result
-            else:
-                body = {'builds': _get_builds_list(cur)}
-    finally:
-        conn.close()
-
+def _resp(status, body):
     return {
-        'statusCode': 200,
-        'headers': {**cors, 'Content-Type': 'application/json'},
+        'statusCode': status,
+        'headers': CORS,
         'body': json.dumps(body, ensure_ascii=False),
         'isBase64Encoded': False,
     }
+
+
+def _admin_id(cur, token):
+    '''Vozvrashchaet user_id esli token prinadlezhit adminu, inache None.'''
+    if not token:
+        return None
+    cur.execute(
+        '''
+        SELECT u.id, u.role FROM sessions s
+        JOIN users u ON u.id = s.user_id
+        WHERE s.token = %s AND s.expires_at > NOW() AND u.is_active = TRUE
+        ''',
+        (token,),
+    )
+    row = cur.fetchone()
+    if row and row['role'] == 'admin':
+        return row['id']
+    return None
+
+
+def handler(event: dict, context) -> dict:
+    '''API kataloga RazPC: chtenie vsem, izmenenie i udalenie sborok — tolko adminu.'''
+    method = event.get('httpMethod', 'GET')
+
+    if method == 'OPTIONS':
+        return {'statusCode': 200, 'headers': {**CORS, 'Access-Control-Max-Age': '86400'}, 'body': ''}
+
+    headers = event.get('headers') or {}
+    token = headers.get('X-Auth-Token') or headers.get('x-auth-token')
+    params = event.get('queryStringParameters') or {}
+    slug = params.get('slug')
+
+    body_data = {}
+    if event.get('body'):
+        try:
+            body_data = json.loads(event['body'])
+        except (ValueError, TypeError):
+            body_data = {}
+
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
+    conn.autocommit = True
+    try:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            if method in ('PUT', 'POST'):
+                return _update_build(cur, token, body_data)
+            if method == 'DELETE':
+                bid = params.get('id') or body_data.get('id')
+                return _delete_build(cur, token, bid)
+
+            if slug:
+                result = _get_build_detail(cur, slug)
+                if result is None:
+                    return _resp(404, {'error': 'Build not found'})
+                return _resp(200, result)
+            return _resp(200, {'builds': _get_builds_list(cur)})
+    finally:
+        conn.close()
+
+
+def _update_build(cur, token, data):
+    if _admin_id(cur, token) is None:
+        return _resp(403, {'error': 'Только администратор может редактировать товары'})
+    bid = data.get('id')
+    if not bid:
+        return _resp(400, {'error': 'Не указан товар'})
+
+    fields = {k: v for k, v in data.items() if k in EDITABLE_FIELDS}
+    if not fields:
+        return _resp(400, {'error': 'Нет данных для обновления'})
+
+    set_parts = []
+    values = []
+    for k, v in fields.items():
+        set_parts.append(f'{k} = %s')
+        values.append(v)
+    values.append(bid)
+    cur.execute(
+        f'UPDATE builds SET {", ".join(set_parts)} WHERE id = %s RETURNING id',
+        values,
+    )
+    if cur.fetchone() is None:
+        return _resp(404, {'error': 'Товар не найден'})
+    return _resp(200, {'ok': True})
+
+
+def _delete_build(cur, token, bid):
+    if _admin_id(cur, token) is None:
+        return _resp(403, {'error': 'Только администратор может удалять товары'})
+    if not bid:
+        return _resp(400, {'error': 'Не указан товар'})
+    cur.execute('DELETE FROM build_components WHERE build_id = %s', (bid,))
+    cur.execute('DELETE FROM builds WHERE id = %s RETURNING id', (bid,))
+    if cur.fetchone() is None:
+        return _resp(404, {'error': 'Товар не найден'})
+    return _resp(200, {'ok': True})
 
 
 def _get_builds_list(cur):

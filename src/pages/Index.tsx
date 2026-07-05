@@ -65,23 +65,27 @@ const Index = () => {
               <Button asChild size="lg" className="w-full sm:w-auto">
                 <Link to="/catalog">
                   <Icon name="LayoutGrid" size={18} className="mr-2" />
-                  Смотреть каталог
+                  <Editable id="home.hero.btn1">Смотреть каталог</Editable>
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
                 <Link to="/configurator">
                   <Icon name="Cpu" size={18} className="mr-2" />
-                  Собрать ПК
+                  <Editable id="home.hero.btn2">Собрать ПК</Editable>
                 </Link>
               </Button>
             </div>
           </div>
 
           <div className="mt-20 grid max-w-4xl grid-cols-2 gap-6 md:grid-cols-4">
-            {stats.map((s) => (
-              <div key={s.label} className="text-center lg:text-left">
-                <div className="font-heading text-3xl font-bold text-primary md:text-4xl">{s.value}</div>
-                <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{s.label}</div>
+            {stats.map((s, i) => (
+              <div key={i} className="text-center lg:text-left">
+                <Editable id={`home.stats.${i}.value`} as="div" className="font-heading text-3xl font-bold text-primary md:text-4xl">
+                  {s.value}
+                </Editable>
+                <Editable id={`home.stats.${i}.label`} as="div" className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
+                  {s.label}
+                </Editable>
               </div>
             ))}
           </div>
@@ -101,16 +105,20 @@ const Index = () => {
           </Editable>
         </div>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((s) => (
+          {services.map((s, i) => (
             <div
-              key={s.title}
+              key={i}
               className="group rounded-lg border border-border bg-card p-6 transition-colors hover:border-primary/50"
             >
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-md bg-secondary text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                 <Icon name={s.icon} size={24} />
               </div>
-              <h3 className="font-heading text-lg font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
+              <Editable id={`home.services.${i}.title`} as="h3" className="font-heading text-lg font-semibold">
+                {s.title}
+              </Editable>
+              <Editable id={`home.services.${i}.text`} as="p" multiline className="mt-2 block text-sm leading-relaxed text-muted-foreground">
+                {s.text}
+              </Editable>
             </div>
           ))}
         </div>
@@ -122,22 +130,25 @@ const Index = () => {
         <div className="container-page py-20">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
-              <h2 className="font-heading text-3xl font-bold md:text-4xl">
+              <Editable id="home.adv.title" as="h2" className="font-heading text-3xl font-bold md:text-4xl">
                 Почему выбирают {siteInfo.name}
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                Мы строим отношения с клиентами на доверии и результате. Каждый заказ —
-                это ответственность, которую мы берём на себя от диагностики до передачи техники.
-              </p>
+              </Editable>
+              <Editable id="home.adv.subtitle" as="p" multiline className="mt-4 block text-muted-foreground">
+                Мы строим отношения с клиентами на доверии и результате. Каждый заказ — это ответственность, которую мы берём на себя от диагностики до передачи техники.
+              </Editable>
               <div className="mt-8 space-y-6">
-                {advantages.map((a) => (
-                  <div key={a.title} className="flex gap-4">
+                {advantages.map((a, i) => (
+                  <div key={i} className="flex gap-4">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
                       <Icon name={a.icon} size={22} />
                     </div>
                     <div>
-                      <h3 className="font-heading text-base font-semibold">{a.title}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">{a.text}</p>
+                      <Editable id={`home.adv.${i}.title`} as="h3" className="font-heading text-base font-semibold">
+                        {a.title}
+                      </Editable>
+                      <Editable id={`home.adv.${i}.text`} as="p" multiline className="mt-1 block text-sm text-muted-foreground">
+                        {a.text}
+                      </Editable>
                     </div>
                   </div>
                 ))}
@@ -145,14 +156,16 @@ const Index = () => {
             </div>
             <div className="rounded-xl border border-border bg-background p-8">
               <Icon name="MessageSquare" size={32} className="text-primary" />
-              <h3 className="mt-5 font-heading text-2xl font-bold">Нужна консультация?</h3>
-              <p className="mt-3 text-muted-foreground">
+              <Editable id="home.consult.title" as="h3" className="mt-5 block font-heading text-2xl font-bold">
+                Нужна консультация?
+              </Editable>
+              <Editable id="home.consult.text" as="p" multiline className="mt-3 block text-muted-foreground">
                 Опишите проблему — наши инженеры бесплатно проконсультируют и предложат решение.
-              </p>
+              </Editable>
               <Button asChild size="lg" className="mt-6 w-full">
                 <Link to="/contacts">
                   <Icon name="Phone" size={18} className="mr-2" />
-                  Связаться с нами
+                  <Editable id="home.consult.btn">Связаться с нами</Editable>
                 </Link>
               </Button>
             </div>
@@ -165,15 +178,15 @@ const Index = () => {
         <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-secondary to-card p-10 text-center md:p-16">
           <BrandBackdrop smokeOpacity={0.35} />
           <div className="relative">
-            <h2 className="font-heading text-3xl font-bold md:text-4xl">
+            <Editable id="home.cta.title" as="h2" className="font-heading text-3xl font-bold md:text-4xl">
               Готовы доверить нам свою технику?
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
+            </Editable>
+            <Editable id="home.cta.text" as="p" multiline className="mx-auto mt-4 block max-w-xl text-muted-foreground">
               Оставьте заявку — рассчитаем стоимость и сроки в течение рабочего дня.
-            </p>
+            </Editable>
             <Button asChild size="lg" className="mt-8">
               <Link to="/contacts">
-                Оставить заявку
+                <Editable id="home.cta.btn">Оставить заявку</Editable>
                 <Icon name="ArrowRight" size={18} className="ml-2" />
               </Link>
             </Button>

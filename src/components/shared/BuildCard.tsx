@@ -1,9 +1,23 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
-import { type BuildListItem, formatPrice } from '@/api/catalog';
+import { useContentEditor } from '@/context/ContentContext';
+import { useToast } from '@/hooks/use-toast';
+import BuildEditDialog from '@/components/editor/BuildEditDialog';
+import { type BuildListItem, formatPrice, deleteBuild } from '@/api/catalog';
 
 const typeIcon: Record<string, string> = {
   CPU: 'Cpu',
@@ -18,16 +32,84 @@ const typeIcon: Record<string, string> = {
 export interface BuildCardProps {
   build: BuildListItem;
   className?: string;
+  onUpdated?: (patch: Partial<BuildListItem>) => void;
+  onDeleted?: () => void;
 }
 
-const BuildCard = ({ build, className }: BuildCardProps) => {
+const BuildCard = ({ build, className, onUpdated, onDeleted }: BuildCardProps) => {
+  const { editMode, canEdit } = useContentEditor();
+  const { toast } = useToast();
+  const [editOpen, setEditOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const showTools = editMode && canEdit;
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await deleteBuild(build.id);
+      toast({ title: 'Удалено', description: `«${build.name}» удалён из каталога.` });
+      setConfirmOpen(false);
+      onDeleted?.();
+    } catch (e) {
+      toast({ title: 'Ошибка', description: (e as Error).message, variant: 'destructive' });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <article
       className={cn(
-        'group flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm-premium transition-all duration-300 hover:border-primary/40 hover:shadow-lg-premium',
+        'group relative flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm-premium transition-all duration-300 hover:border-primary/40 hover:shadow-lg-premium',
+        showTools && 'outline outline-2 outline-dashed outline-primary/40',
         className,
       )}
     >
+      {showTools && (
+        <div className="absolute right-3 top-3 z-10 flex gap-1.5">
+          <Button size="sm" onClick={() => setEditOpen(true)}>
+            <Icon name="Pencil" size={14} className="mr-1" />
+            Изменить
+          </Button>
+          <Button size="sm" variant="destructive" onClick={() => setConfirmOpen(true)}>
+            <Icon name="Trash2" size={14} />
+          </Button>
+        </div>
+      )}
+
+      {showTools && (
+        <>
+          <BuildEditDialog
+            build={build}
+            open={editOpen}
+            onOpenChange={setEditOpen}
+            onSaved={(patch) => onUpdated?.(patch)}
+          />
+          <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Удалить товар?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  «{build.name}» будет удалён из каталога без возможности восстановления.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={deleting}>Отмена</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleDelete();
+                  }}
+                  disabled={deleting}
+                >
+                  {deleting ? 'Удаляем…' : 'Удалить'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
+      )}
       {/* Постер */}
       <Link to={`/catalog/${build.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-secondary/30">
         {build.image_url ? (
