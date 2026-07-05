@@ -7,36 +7,54 @@
       "expectedStatus": 401
     },
     {
-      "name": "Items list without token returns 401",
+      "name": "Models list without token returns 401",
       "method": "GET",
-      "path": "/?resource=items",
+      "path": "/?resource=models",
       "expectedStatus": 401
     },
     {
-      "name": "Refs without token returns 401",
+      "name": "Units list without token returns 401",
       "method": "GET",
-      "path": "/?resource=refs",
+      "path": "/?resource=units",
       "expectedStatus": 401
     },
     {
-      "name": "Create item without token returns 401",
+      "name": "Lots without token returns 401",
+      "method": "GET",
+      "path": "/?resource=lots",
+      "expectedStatus": 401
+    },
+    {
+      "name": "Receive without token returns 401",
       "method": "POST",
-      "path": "/?resource=items",
-      "body": {"name": "Test"},
+      "path": "/?resource=lots&action=receive",
+      "body": {"items": []},
       "expectedStatus": 401
     },
     {
-      "name": "Operation without token returns 401",
-      "method": "POST",
-      "path": "/?resource=operation",
-      "body": {"operation": "income", "item_id": 1, "qty": 1},
-      "expectedStatus": 401
-    },
-    {
-      "name": "Unknown resource with bad token returns 401",
+      "name": "Machines without token returns 401",
       "method": "GET",
-      "path": "/?resource=bogus",
-      "headers": {"X-Auth-Token": "invalid-token-xyz"},
+      "path": "/?resource=machines",
+      "expectedStatus": 401
+    },
+    {
+      "name": "Accounts without token returns 401",
+      "method": "GET",
+      "path": "/?resource=accounts",
+      "expectedStatus": 401
+    },
+    {
+      "name": "Sell without token returns 401",
+      "method": "POST",
+      "path": "/?resource=sell",
+      "body": {"kind": "service", "price": 100},
+      "expectedStatus": 401
+    },
+    {
+      "name": "Bad token returns 401",
+      "method": "GET",
+      "path": "/?resource=dashboard",
+      "headers": {"X-Auth-Token": "invalid-xyz"},
       "expectedStatus": 401
     },
     {

@@ -33,9 +33,17 @@ import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminWarehouse from "./pages/admin/AdminWarehouse";
 import AdminWarehouseItems from "./pages/admin/AdminWarehouseItems";
-import AdminWarehouseItem from "./pages/admin/AdminWarehouseItem";
-import AdminWarehouseAudits from "./pages/admin/AdminWarehouseAudits";
-import AdminWarehouseAudit from "./pages/admin/AdminWarehouseAudit";
+import AdminWarehouseModel from "./pages/admin/AdminWarehouseModel";
+import AdminWarehouseUnits from "./pages/admin/AdminWarehouseUnits";
+import AdminWarehouseUnit from "./pages/admin/AdminWarehouseUnit";
+import AdminWarehouseReceive from "./pages/admin/AdminWarehouseReceive";
+import AdminWarehouseLots from "./pages/admin/AdminWarehouseLots";
+import AdminWarehouseLot from "./pages/admin/AdminWarehouseLot";
+import AdminWarehouseMachines from "./pages/admin/AdminWarehouseMachines";
+import AdminWarehouseBuild from "./pages/admin/AdminWarehouseBuild";
+import AdminWarehouseMachine from "./pages/admin/AdminWarehouseMachine";
+import AdminFinance from "./pages/admin/AdminFinance";
+import AdminDebts from "./pages/admin/AdminDebts";
 
 const queryClient = new QueryClient();
 
@@ -149,26 +157,90 @@ const App = () => (
                 }
               />
               <Route
-                path="warehouse/items/:id"
+                path="warehouse/models/:id"
                 element={
                   <ProtectedRoute roles={["admin", "manager"]}>
-                    <AdminWarehouseItem />
+                    <AdminWarehouseModel />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="warehouse/audits"
+                path="warehouse/units"
                 element={
                   <ProtectedRoute roles={["admin", "manager"]}>
-                    <AdminWarehouseAudits />
+                    <AdminWarehouseUnits />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="warehouse/audits/:id"
+                path="warehouse/units/:id"
                 element={
                   <ProtectedRoute roles={["admin", "manager"]}>
-                    <AdminWarehouseAudit />
+                    <AdminWarehouseUnit />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/receive"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseReceive />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/lots"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseLots />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/lots/:id"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseLot />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/machines"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseMachines />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/build"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseBuild />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="warehouse/machines/:id"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminWarehouseMachine />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="finance"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminFinance />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="debts"
+                element={
+                  <ProtectedRoute roles={["admin", "manager"]}>
+                    <AdminDebts />
                   </ProtectedRoute>
                 }
               />
