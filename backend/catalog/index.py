@@ -14,7 +14,7 @@ CORS = {
 
 EDITABLE_FIELDS = {
     'name', 'tagline', 'price', 'old_price', 'image_url', 'tier',
-    'performance_badge', 'status', 'warranty', 'is_featured',
+    'performance_badge', 'status', 'warranty', 'is_featured', 'is_archived',
 }
 
 
@@ -81,7 +81,9 @@ def handler(event: dict, context) -> dict:
                 if result is None:
                     return _resp(404, {'error': 'Build not found'})
                 return _resp(200, result)
-            return _resp(200, {'builds': _get_builds_list(cur)})
+            # Arhivnye sborki vidny tolko adminu pri ?archived=1
+            include_archived = params.get('archived') == '1' and _admin_id(cur, token) is not None
+            return _resp(200, {'builds': _get_builds_list(cur, include_archived)})
     finally:
         conn.close()
 
@@ -160,12 +162,14 @@ def _delete_build(cur, token, bid):
     return _resp(200, {'ok': True})
 
 
-def _get_builds_list(cur):
+def _get_builds_list(cur, include_archived=False):
+    where = '' if include_archived else 'WHERE is_archived = FALSE'
     cur.execute(
-        '''
+        f'''
         SELECT id, slug, name, tagline, price, old_price, image_url,
-               tier, performance_badge, status, warranty, is_featured
+               tier, performance_badge, status, warranty, is_featured, is_archived
         FROM builds
+        {where}
         ORDER BY sort_order ASC, id ASC
         '''
     )
@@ -201,7 +205,7 @@ def _get_build_detail(cur, slug):
     cur.execute(
         '''
         SELECT id, slug, name, tagline, price, old_price, image_url,
-               tier, performance_badge, status, warranty, key_tasks
+               tier, performance_badge, status, warranty, key_tasks, is_archived
         FROM builds WHERE slug = %s
         ''',
         (slug,),

@@ -28,6 +28,7 @@ export interface BuildListItem {
   status: 'in_stock' | 'on_order';
   warranty: string;
   is_featured: boolean;
+  is_archived: boolean;
   highlights: BuildComponent[];
 }
 
@@ -36,8 +37,11 @@ export interface BuildDetail extends Omit<BuildListItem, 'highlights' | 'is_feat
   components: BuildComponent[];
 }
 
-export async function fetchBuilds(): Promise<BuildListItem[]> {
-  const res = await fetch(CATALOG_URL);
+export async function fetchBuilds(includeArchived = false): Promise<BuildListItem[]> {
+  const url = includeArchived ? `${CATALOG_URL}?archived=1` : CATALOG_URL;
+  const res = await fetch(url, {
+    headers: includeArchived ? { 'X-Auth-Token': getToken() || '' } : {},
+  });
   if (!res.ok) throw new Error('Не удалось загрузить каталог');
   const data = await res.json();
   return data.builds as BuildListItem[];
@@ -62,6 +66,7 @@ export interface BuildUpdate {
   status?: 'in_stock' | 'on_order';
   warranty?: string;
   is_featured?: boolean;
+  is_archived?: boolean;
 }
 
 export async function updateBuild(update: BuildUpdate): Promise<void> {
@@ -72,6 +77,10 @@ export async function updateBuild(update: BuildUpdate): Promise<void> {
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'Не удалось сохранить товар');
+}
+
+export async function archiveBuild(id: number, archived: boolean): Promise<void> {
+  await updateBuild({ id, is_archived: archived });
 }
 
 export async function deleteBuild(id: number): Promise<void> {

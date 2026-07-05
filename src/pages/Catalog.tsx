@@ -27,12 +27,15 @@ const Catalog = () => {
     }
   };
 
+  const showArchived = editMode && canEdit;
+
   useEffect(() => {
-    fetchBuilds()
+    setLoading(true);
+    fetchBuilds(showArchived)
       .then(setBuilds)
       .catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, []);
+  }, [showArchived]);
 
   const tiers = useMemo(() => {
     const set = new Set<string>();
@@ -101,6 +104,7 @@ const Catalog = () => {
                   <BuildCard
                     key={b.id}
                     build={b}
+                    className={b.is_archived ? 'opacity-60' : undefined}
                     onUpdated={(patch) =>
                       setBuilds((prev) =>
                         prev.map((x) => (x.id === b.id ? { ...x, ...patch } : x)),

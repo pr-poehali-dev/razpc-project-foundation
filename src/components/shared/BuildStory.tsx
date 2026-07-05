@@ -3,6 +3,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import Editable from '@/components/editor/Editable';
 import { type BuildDetail, type BuildComponent } from '@/api/catalog';
 
 const typeMeta: Record<string, { icon: string; label: string }> = {
@@ -32,13 +33,15 @@ const OverviewSlide = ({ build }: { build: BuildDetail }) => (
 
     <div className="container-page relative flex h-full flex-col justify-center py-16">
       <div className="max-w-2xl">
-        <span className="text-sm font-medium uppercase tracking-widest text-primary">
+        <Editable id={`build.${build.id}.overview.eyebrow`} as="span" className="text-sm font-medium uppercase tracking-widest text-primary">
           Обзор сборки
-        </span>
-        <h3 className="mt-3 font-heading text-4xl font-bold leading-tight md:text-6xl">
+        </Editable>
+        <Editable id={`build.${build.id}.overview.title`} as="h3" className="mt-3 block font-heading text-4xl font-bold leading-tight md:text-6xl">
           Ключевые задачи
-        </h3>
-        <p className="mt-3 text-lg text-muted-foreground">Для чего создан {build.name}</p>
+        </Editable>
+        <Editable id={`build.${build.id}.overview.subtitle`} as="p" className="mt-3 block text-lg text-muted-foreground">
+          Для чего создан {build.name}
+        </Editable>
 
         {build.key_tasks && build.key_tasks.length > 0 && (
           <ul className="mt-8 space-y-4">
@@ -62,14 +65,17 @@ const ComponentSlide = ({
   component,
   index,
   total,
+  buildId,
 }: {
   component: BuildComponent;
   index: number;
   total: number;
+  buildId: number;
 }) => {
   const meta = typeMeta[component.type] ?? { icon: 'Cpu', label: component.type };
   const specs =
     component.key_specs && component.key_specs.length > 0 ? component.key_specs : [component.spec];
+  const keyBase = `build.${buildId}.comp.${component.type}`;
 
   return (
     <div className="relative flex h-full w-full items-center overflow-hidden">
@@ -88,14 +94,16 @@ const ComponentSlide = ({
             </span>
           </div>
 
-          <span className="inline-flex items-center rounded-md bg-primary/15 px-3 py-1 text-sm font-bold uppercase tracking-wider text-primary">
+          <Editable id={`${keyBase}.brand`} as="span" className="inline-flex items-center rounded-md bg-primary/15 px-3 py-1 text-sm font-bold uppercase tracking-wider text-primary">
             {component.brand}
-          </span>
-          <h3 className="mt-4 font-heading text-4xl font-bold leading-tight md:text-6xl">
+          </Editable>
+          <Editable id={`${keyBase}.name`} as="h3" className="mt-4 block font-heading text-4xl font-bold leading-tight md:text-6xl">
             {component.name}
-          </h3>
+          </Editable>
           {component.role && (
-            <p className="mt-3 text-xl font-medium text-primary">{component.role}</p>
+            <Editable id={`${keyBase}.role`} as="p" className="mt-3 block text-xl font-medium text-primary">
+              {component.role}
+            </Editable>
           )}
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -191,7 +199,7 @@ const BuildStory = ({ build, className }: BuildStoryProps) => {
           </div>
           {sorted.map((c, i) => (
             <div key={c.type} className="h-[80vh] min-h-[560px] min-w-0 flex-[0_0_100%]">
-              <ComponentSlide component={c} index={i + 1} total={sorted.length} />
+              <ComponentSlide component={c} index={i + 1} total={sorted.length} buildId={build.id} />
             </div>
           ))}
         </div>

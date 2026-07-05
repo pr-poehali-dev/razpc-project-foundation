@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useContentEditor } from '@/context/ContentContext';
 import BuildEditDialog from '@/components/editor/BuildEditDialog';
-import { fetchBuild, deleteBuild, formatPrice, type BuildDetail as BuildDetailType, type BuildListItem } from '@/api/catalog';
+import { fetchBuild, deleteBuild, archiveBuild, formatPrice, type BuildDetail as BuildDetailType, type BuildListItem } from '@/api/catalog';
 
 const BuildDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -25,6 +25,7 @@ const BuildDetail = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [archiving, setArchiving] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -80,6 +81,25 @@ const BuildDetail = () => {
     }
   };
 
+  const handleArchive = async () => {
+    setArchiving(true);
+    const next = !build.is_archived;
+    try {
+      await archiveBuild(build.id, next);
+      toast({
+        title: next ? 'В архиве' : 'Возвращено',
+        description: next
+          ? `«${build.name}» скрыт из каталога.`
+          : `«${build.name}» снова виден в каталоге.`,
+      });
+      setBuild((prev) => (prev ? { ...prev, is_archived: next } : prev));
+    } catch (e) {
+      toast({ title: 'Ошибка', description: (e as Error).message, variant: 'destructive' });
+    } finally {
+      setArchiving(false);
+    }
+  };
+
   // Ob'ekt dlya dialoga redaktirovaniya
   const buildForDialog: BuildListItem = {
     ...build,
@@ -96,11 +116,20 @@ const BuildDetail = () => {
               <span className="flex items-center gap-2 text-sm font-medium">
                 <Icon name="Pencil" size={15} />
                 Редактирование товара
+                {build.is_archived && (
+                  <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+                    В архиве
+                  </span>
+                )}
               </span>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button size="sm" onClick={() => setEditOpen(true)}>
                   <Icon name="Pencil" size={14} className="mr-1.5" />
                   Изменить
+                </Button>
+                <Button size="sm" variant="secondary" onClick={handleArchive} disabled={archiving}>
+                  <Icon name={build.is_archived ? 'ArchiveRestore' : 'Archive'} size={14} className="mr-1.5" />
+                  {build.is_archived ? 'Вернуть из архива' : 'В архив'}
                 </Button>
                 <Button size="sm" variant="destructive" onClick={() => setConfirmOpen(true)}>
                   <Icon name="Trash2" size={14} className="mr-1.5" />

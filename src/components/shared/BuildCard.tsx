@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import { useContentEditor } from '@/context/ContentContext';
 import { useToast } from '@/hooks/use-toast';
 import BuildEditDialog from '@/components/editor/BuildEditDialog';
-import { type BuildListItem, formatPrice, deleteBuild } from '@/api/catalog';
+import { type BuildListItem, formatPrice, deleteBuild, archiveBuild } from '@/api/catalog';
 
 const typeIcon: Record<string, string> = {
   CPU: 'Cpu',
@@ -42,6 +42,7 @@ const BuildCard = ({ build, className, onUpdated, onDeleted }: BuildCardProps) =
   const [editOpen, setEditOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [archiving, setArchiving] = useState(false);
   const showTools = editMode && canEdit;
 
   const handleDelete = async () => {
@@ -58,6 +59,25 @@ const BuildCard = ({ build, className, onUpdated, onDeleted }: BuildCardProps) =
     }
   };
 
+  const handleArchive = async () => {
+    setArchiving(true);
+    const next = !build.is_archived;
+    try {
+      await archiveBuild(build.id, next);
+      toast({
+        title: next ? 'В архиве' : 'Возвращено',
+        description: next
+          ? `«${build.name}» скрыт из каталога.`
+          : `«${build.name}» снова виден в каталоге.`,
+      });
+      onUpdated?.({ is_archived: next });
+    } catch (e) {
+      toast({ title: 'Ошибка', description: (e as Error).message, variant: 'destructive' });
+    } finally {
+      setArchiving(false);
+    }
+  };
+
   return (
     <article
       className={cn(
@@ -67,14 +87,24 @@ const BuildCard = ({ build, className, onUpdated, onDeleted }: BuildCardProps) =
       )}
     >
       {showTools && (
-        <div className="absolute right-3 top-3 z-10 flex gap-1.5">
+        <div className="absolute right-3 top-3 z-10 flex flex-wrap justify-end gap-1.5">
           <Button size="sm" onClick={() => setEditOpen(true)}>
             <Icon name="Pencil" size={14} className="mr-1" />
             Изменить
           </Button>
+          <Button size="sm" variant="secondary" onClick={handleArchive} disabled={archiving}>
+            <Icon name={build.is_archived ? 'ArchiveRestore' : 'Archive'} size={14} className="mr-1" />
+            {build.is_archived ? 'Вернуть' : 'В архив'}
+          </Button>
           <Button size="sm" variant="destructive" onClick={() => setConfirmOpen(true)}>
             <Icon name="Trash2" size={14} />
           </Button>
+        </div>
+      )}
+
+      {showTools && build.is_archived && (
+        <div className="absolute left-3 top-3 z-10 rounded-md bg-muted px-2 py-1 text-xs font-semibold text-muted-foreground">
+          В архиве
         </div>
       )}
 
