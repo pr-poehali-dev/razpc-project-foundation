@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
 import { footerNav, siteInfo } from '@/config/navigation';
+import Editable from '@/components/editor/Editable';
 
 const Footer = () => {
   const columns = [footerNav.company, footerNav.services, footerNav.account];
@@ -20,17 +21,26 @@ const Footer = () => {
                 {siteInfo.name}
               </span>
             </Link>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            <Editable
+              id="footer.about"
+              as="p"
+              multiline
+              className="mt-4 text-sm leading-relaxed text-muted-foreground"
+            >
               Профессиональный ремонт, сборка ПК и продажа комплектующих. Надёжность, проверенная временем.
-            </p>
+            </Editable>
             <div className="mt-4 space-y-2 text-sm text-muted-foreground">
               <p className="flex items-center gap-2">
-                <Icon name="Phone" size={15} className="text-primary" />
-                {siteInfo.phone}
+                <Icon name="Phone" size={15} className="text-primary shrink-0" />
+                <Editable id="footer.phone" as="span">{siteInfo.phone}</Editable>
               </p>
               <p className="flex items-center gap-2">
-                <Icon name="Mail" size={15} className="text-primary" />
-                {siteInfo.email}
+                <Icon name="Mail" size={15} className="text-primary shrink-0" />
+                <Editable id="footer.email" as="span">{siteInfo.email}</Editable>
+              </p>
+              <p className="flex items-center gap-2">
+                <Icon name="MapPin" size={15} className="text-primary shrink-0" />
+                <Editable id="footer.address" as="span">{siteInfo.address}</Editable>
               </p>
             </div>
           </div>
@@ -61,8 +71,8 @@ const Footer = () => {
             © {new Date().getFullYear()} {siteInfo.name}. Все права защищены.
           </p>
           <p className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Icon name="Clock" size={14} className="text-primary" />
-            {siteInfo.workHours}
+            <Icon name="Clock" size={14} className="text-primary shrink-0" />
+            <Editable id="footer.workhours" as="span">{siteInfo.workHours}</Editable>
           </p>
         </div>
       </div>
