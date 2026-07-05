@@ -49,15 +49,43 @@ const EditableImage = ({
     }
   };
 
+  const fileInput = showTools && (
+    <input
+      ref={inputRef}
+      type="file"
+      accept="image/png,image/jpeg,image/webp,image/gif"
+      className="hidden"
+      onChange={handleFile}
+    />
+  );
+
+  // Fon: kompaktnaya knopka v uglu, chtoby ne perekryvat tekst poverkh fona
+  if (asBackground) {
+    return (
+      <div
+        className={cn('relative bg-cover bg-center bg-no-repeat', showTools && 'outline outline-2 outline-dashed outline-primary/50', className)}
+        style={{ backgroundImage: `url(${current})` }}
+      >
+        {fileInput}
+        {showTools && (
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="absolute right-3 top-3 z-20 inline-flex items-center gap-1.5 rounded-md bg-black/70 px-3 py-1.5 text-sm font-medium text-white shadow-lg backdrop-blur transition-colors hover:bg-black/85"
+          >
+            <Icon name={uploading ? 'Loader' : 'ImageUp'} size={16} className={uploading ? 'animate-spin' : ''} />
+            {uploading ? 'Загрузка…' : 'Заменить фон'}
+          </button>
+        )}
+        {children}
+      </div>
+    );
+  }
+
   const overlay = showTools && (
     <>
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/png,image/jpeg,image/webp,image/gif"
-        className="hidden"
-        onChange={handleFile}
-      />
+      {fileInput}
       <button
         type="button"
         onClick={() => inputRef.current?.click()}
@@ -71,18 +99,6 @@ const EditableImage = ({
       </button>
     </>
   );
-
-  if (asBackground) {
-    return (
-      <div
-        className={cn('relative bg-cover bg-center bg-no-repeat', showTools && 'outline outline-2 outline-dashed outline-primary/50', className)}
-        style={{ backgroundImage: `url(${current})` }}
-      >
-        {overlay}
-        {children}
-      </div>
-    );
-  }
 
   return (
     <div className={cn('relative overflow-hidden', showTools && 'outline outline-2 outline-dashed outline-primary/50')}>
