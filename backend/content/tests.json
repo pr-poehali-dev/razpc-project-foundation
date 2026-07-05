@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "name": "Get content returns object",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {"content": {}},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Save without admin token returns 403",
+      "method": "POST",
+      "path": "/",
+      "body": {"key": "test.key", "value": "hacked"},
+      "expectedStatus": 403
+    }
+  ]
+}

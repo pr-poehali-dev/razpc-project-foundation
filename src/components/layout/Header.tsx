@@ -4,6 +4,7 @@ import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { mainNav, siteInfo } from '@/config/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useContentEditor } from '@/context/ContentContext';
 import {
   Sheet,
   SheetContent,
@@ -13,6 +14,7 @@ import {
 const Header = () => {
   const [open, setOpen] = useState(false);
   const { user, isStaff } = useAuth();
+  const { canEdit, editMode, toggleEditMode } = useContentEditor();
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `text-sm font-medium transition-colors hover:text-primary ${
@@ -49,6 +51,16 @@ const Header = () => {
         <div className="hidden items-center gap-2 lg:flex">
           {user ? (
             <>
+              {canEdit && (
+                <Button
+                  variant={editMode ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={toggleEditMode}
+                >
+                  <Icon name="Pencil" size={16} className="mr-1.5" />
+                  {editMode ? 'Редактирую' : 'Редактор'}
+                </Button>
+              )}
               {isStaff && (
                 <Button asChild variant="ghost" size="sm">
                   <Link to="/admin">

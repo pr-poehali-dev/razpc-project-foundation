@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { ContentProvider } from "./context/ContentContext";
+import EditorBar from "./components/editor/EditorBar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminLayout from "./components/admin/AdminLayout";
 import Layout from "./components/layout/Layout";
@@ -35,6 +37,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <ContentProvider>
+          <EditorBar />
           <Routes>
             {/* Публичный сайт */}
             <Route element={<Layout />}>
@@ -99,6 +103,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </ContentProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
