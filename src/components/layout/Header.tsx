@@ -24,10 +24,20 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
       <div className="container-page flex h-16 items-center justify-between">
-        <Link to="/" className="group flex items-center" aria-label={siteInfo.name}>
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary font-heading text-2xl font-bold text-primary-foreground ring-1 ring-primary/30 transition-transform group-hover:scale-105">
-            R
-          </span>
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <img
+            src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/c72fd3c0-7a01-4c2c-936a-c2c8a39fcd85.jpg"
+            alt="RazPC"
+            className="h-10 w-10 rounded-lg object-cover ring-1 ring-border transition-transform group-hover:scale-105"
+          />
+          <div className="leading-tight">
+            <span className="block font-heading text-lg font-bold tracking-wide">
+              {siteInfo.name}
+            </span>
+            <span className="block text-[10px] uppercase tracking-widest text-muted-foreground">
+              {siteInfo.tagline}
+            </span>
+          </div>
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex">
