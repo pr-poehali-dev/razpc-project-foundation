@@ -71,6 +71,14 @@ export async function apiLogout() {
   clearToken();
 }
 
+export async function apiForgotPassword(email: string): Promise<void> {
+  await post('forgot', { email });
+}
+
+export async function apiResetPassword(email: string, code: string, password: string): Promise<void> {
+  await post('reset', { email, code, password });
+}
+
 export interface ManagedUser {
   id: number;
   email: string;

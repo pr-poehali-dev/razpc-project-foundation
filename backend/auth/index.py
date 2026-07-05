@@ -3,12 +3,18 @@ import os
 import hashlib
 import hmac
 import secrets
+import smtplib
+import ssl
+from email.mime.text import MIMEText
+from email.utils import formataddr
 from datetime import datetime, timedelta
 
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
 SESSION_DAYS = 30
+RESET_CODE_TTL_MIN = 15
+RESET_MAX_ATTEMPTS = 5
 
 
 def _cors(extra=None):
@@ -50,6 +56,39 @@ def _json(status, body):
     }
 
 
+def _send_email(to_email: str, subject: str, text: str) -> bool:
+    '''Otpravka pisma cherez SMTP. Vozvrashchaet True pri uspehe.'''
+    host = os.environ.get('SMTP_HOST')
+    user = os.environ.get('SMTP_USER')
+    password = os.environ.get('SMTP_PASSWORD')
+    port = int(os.environ.get('SMTP_PORT') or 465)
+    if not (host and user and password):
+        # Pochta ne nastroena - kod ostaetsya v logah
+        print(f'[SMTP not configured] To {to_email}: {text}')
+        return False
+
+    msg = MIMEText(text, 'plain', 'utf-8')
+    msg['Subject'] = subject
+    msg['From'] = formataddr(('RazPC', user))
+    msg['To'] = to_email
+
+    try:
+        if port == 465:
+            ctx = ssl.create_default_context()
+            with smtplib.SMTP_SSL(host, port, context=ctx, timeout=15) as server:
+                server.login(user, password)
+                server.sendmail(user, [to_email], msg.as_string())
+        else:
+            with smtplib.SMTP(host, port, timeout=15) as server:
+                server.starttls(context=ssl.create_default_context())
+                server.login(user, password)
+                server.sendmail(user, [to_email], msg.as_string())
+        return True
+    except Exception as e:
+        print(f'[SMTP error] {e}')
+        return False
+
+
 def handler(event: dict, context) -> dict:
     '''Avtorizaciya RazPC: registraciya, vhod, tekushchiy polzovatel, vyhod.'''
     method = event.get('httpMethod', 'GET')
@@ -84,6 +123,10 @@ def handler(event: dict, context) -> dict:
                 return _list_users(cur, token)
             if method == 'POST' and action == 'set_role':
                 return _set_role(cur, token, body)
+            if method == 'POST' and action == 'forgot':
+                return _forgot(cur, body)
+            if method == 'POST' and action == 'reset':
+                return _reset(cur, body)
             return _json(400, {'error': 'Unknown action'})
     finally:
         conn.close()
@@ -241,4 +284,81 @@ def _set_role(cur, token, body):
     cur.execute('UPDATE users SET role = %s WHERE id = %s RETURNING id', (new_role, user_id))
     if not cur.fetchone():
         return _json(404, {'error': 'Пользователь не найден'})
+    return _json(200, {'ok': True})
+
+
+def _forgot(cur, body):
+    '''Zapros koda vosstanovleniya: generiruem kod i shlem na pochtu.'''
+    email = (body.get('email') or '').strip().lower()
+    if not email or '@' not in email:
+        return _json(400, {'error': 'Введите корректный email'})
+
+    cur.execute('SELECT id, name, is_active FROM users WHERE email = %s', (email,))
+    user = cur.fetchone()
+
+    # Ne raskryvaem, sushchestvuet li email - vsegda otvechaem ok
+    if user and user['is_active']:
+        code = f'{secrets.randbelow(1000000):06d}'
+        expires = datetime.utcnow() + timedelta(minutes=RESET_CODE_TTL_MIN)
+        # Gasim starye neispolzovannye kody
+        cur.execute(
+            'UPDATE password_resets SET used = TRUE WHERE user_id = %s AND used = FALSE',
+            (user['id'],),
+        )
+        cur.execute(
+            'INSERT INTO password_resets (user_id, code, expires_at) VALUES (%s, %s, %s)',
+            (user['id'], code, expires),
+        )
+        text = (
+            f"Здравствуйте, {user['name']}!\n\n"
+            f"Код для восстановления доступа к аккаунту RazPC: {code}\n\n"
+            f"Код действует {RESET_CODE_TTL_MIN} минут. "
+            f"Если вы не запрашивали восстановление — просто проигнорируйте это письмо."
+        )
+        _send_email(email, 'Восстановление доступа RazPC', text)
+
+    return _json(200, {'ok': True})
+
+
+def _reset(cur, body):
+    '''Sbros parolya po kodu iz pisma.'''
+    email = (body.get('email') or '').strip().lower()
+    code = (body.get('code') or '').strip()
+    password = body.get('password') or ''
+
+    if len(password) < 6:
+        return _json(400, {'error': 'Пароль должен быть не короче 6 символов'})
+    if not code:
+        return _json(400, {'error': 'Введите код из письма'})
+
+    cur.execute('SELECT id FROM users WHERE email = %s AND is_active = TRUE', (email,))
+    user = cur.fetchone()
+    if not user:
+        return _json(400, {'error': 'Неверный код или email'})
+
+    cur.execute(
+        '''
+        SELECT id, code, attempts FROM password_resets
+        WHERE user_id = %s AND used = FALSE AND expires_at > NOW()
+        ORDER BY created_at DESC LIMIT 1
+        ''',
+        (user['id'],),
+    )
+    reset = cur.fetchone()
+    if not reset:
+        return _json(400, {'error': 'Код устарел или не найден. Запросите новый.'})
+
+    if reset['attempts'] >= RESET_MAX_ATTEMPTS:
+        cur.execute('UPDATE password_resets SET used = TRUE WHERE id = %s', (reset['id'],))
+        return _json(400, {'error': 'Слишком много попыток. Запросите новый код.'})
+
+    if not hmac.compare_digest(reset['code'], code):
+        cur.execute('UPDATE password_resets SET attempts = attempts + 1 WHERE id = %s', (reset['id'],))
+        return _json(400, {'error': 'Неверный код'})
+
+    # Kod verniy - menyaem parol, gasim kod, sbrasyvaem vse sessii
+    cur.execute('UPDATE users SET password_hash = %s WHERE id = %s', (_make_hash(password), user['id']))
+    cur.execute('UPDATE password_resets SET used = TRUE WHERE id = %s', (reset['id'],))
+    cur.execute('DELETE FROM sessions WHERE user_id = %s', (user['id'],))
+
     return _json(200, {'ok': True})

@@ -38,6 +38,36 @@
       "path": "/?action=set_role",
       "body": {"user_id": 1, "role": "manager"},
       "expectedStatus": 401
+    },
+    {
+      "name": "Forgot with unknown email returns ok (no disclosure)",
+      "method": "POST",
+      "path": "/?action=forgot",
+      "body": {"email": "nobody_here_2731@example.com"},
+      "expectedStatus": 200,
+      "expectedBody": {"ok": true},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Forgot without email returns 400",
+      "method": "POST",
+      "path": "/?action=forgot",
+      "body": {},
+      "expectedStatus": 400
+    },
+    {
+      "name": "Reset with short password returns 400",
+      "method": "POST",
+      "path": "/?action=reset",
+      "body": {"email": "a@b.com", "code": "123456", "password": "123"},
+      "expectedStatus": 400
+    },
+    {
+      "name": "Reset with wrong code returns 400",
+      "method": "POST",
+      "path": "/?action=reset",
+      "body": {"email": "nobody_here_2731@example.com", "code": "000000", "password": "secret123"},
+      "expectedStatus": 400
     }
   ]
 }
