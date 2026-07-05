@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import { updateBuild, type BuildListItem, type BuildUpdate } from '@/api/catalog';
+import { uploadImage } from '@/api/upload';
 
 interface Props {
   build: BuildListItem;
@@ -25,6 +26,8 @@ interface Props {
 const BuildEditDialog = ({ build, open, onOpenChange, onSaved }: Props) => {
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({
     name: build.name,
     tagline: build.tagline ?? '',
@@ -40,6 +43,22 @@ const BuildEditDialog = ({ build, open, onOpenChange, onSaved }: Props) => {
 
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
     setForm((p) => ({ ...p, [k]: v }));
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadImage(file);
+      set('image_url', url);
+      toast({ title: 'Фото загружено', description: 'Не забудьте сохранить товар.' });
+    } catch (err) {
+      toast({ title: 'Ошибка', description: (err as Error).message, variant: 'destructive' });
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -128,8 +147,44 @@ const BuildEditDialog = ({ build, open, onOpenChange, onSaved }: Props) => {
             <Input value={form.warranty} onChange={(e) => set('warranty', e.target.value)} />
           </div>
           <div className="space-y-1.5">
-            <Label>Ссылка на изображение</Label>
-            <Input value={form.image_url} onChange={(e) => set('image_url', e.target.value)} />
+            <Label>Фото товара</Label>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              className="hidden"
+              onChange={handleFile}
+            />
+            <div className="flex items-center gap-3">
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-secondary/30">
+                {form.image_url ? (
+                  <img src={form.image_url} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  <Icon name="ImageOff" size={22} className="text-muted-foreground/40" />
+                )}
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={uploading}
+                >
+                  <Icon name={uploading ? 'Loader' : 'Upload'} size={14} className={`mr-1.5 ${uploading ? 'animate-spin' : ''}`} />
+                  {uploading ? 'Загрузка…' : 'Загрузить фото'}
+                </Button>
+                {form.image_url && (
+                  <button
+                    type="button"
+                    onClick={() => set('image_url', '')}
+                    className="text-left text-xs text-muted-foreground hover:text-destructive"
+                  >
+                    Убрать фото
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
           <div className="flex items-center justify-between rounded-md border border-border px-3 py-2">
             <Label className="cursor-pointer">Под заказ</Label>

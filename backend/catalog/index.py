@@ -68,6 +68,8 @@ def handler(event: dict, context) -> dict:
     conn.autocommit = True
     try:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            if method == 'POST' and body_data.get('action') == 'create':
+                return _create_build(cur, token, body_data)
             if method in ('PUT', 'POST'):
                 return _update_build(cur, token, body_data)
             if method == 'DELETE':
@@ -108,6 +110,42 @@ def _update_build(cur, token, data):
     if cur.fetchone() is None:
         return _resp(404, {'error': 'Товар не найден'})
     return _resp(200, {'ok': True})
+
+
+def _create_build(cur, token, data):
+    if _admin_id(cur, token) is None:
+        return _resp(403, {'error': 'Только администратор может добавлять товары'})
+
+    name = (data.get('name') or 'Новая конфигурация').strip()
+
+    # Generiruem unikalniy slug
+    cur.execute('SELECT COALESCE(MAX(id), 0) + 1 AS n FROM builds')
+    n = cur.fetchone()['n']
+    slug = f'build-{n}'
+
+    cur.execute('SELECT COALESCE(MAX(sort_order), 0) + 1 AS s FROM builds')
+    sort_order = cur.fetchone()['s']
+
+    cur.execute(
+        '''
+        INSERT INTO builds
+            (slug, name, tagline, price, old_price, image_url, tier,
+             performance_badge, status, warranty, is_featured, sort_order, key_tasks)
+        VALUES (%s, %s, %s, %s, NULL, NULL, %s, NULL, 'in_stock', %s, FALSE, %s, '')
+        RETURNING id, slug
+        ''',
+        (
+            slug,
+            name,
+            data.get('tagline') or 'Описание сборки',
+            int(data.get('price') or 0),
+            data.get('tier') or 'Новинка',
+            data.get('warranty') or '12 месяцев',
+            sort_order,
+        ),
+    )
+    row = cur.fetchone()
+    return _resp(200, {'ok': True, 'id': row['id'], 'slug': row['slug']})
 
 
 def _delete_build(cur, token, bid):

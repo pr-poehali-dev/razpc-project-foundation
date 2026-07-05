@@ -1,19 +1,30 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { BrandBackdrop, BuildStory } from '@/components/shared';
 import {
   Spinner, EmptyState, Button, Badge, Icon,
   Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
   BreadcrumbPage, BreadcrumbSeparator, useToast,
 } from '@/components/ui';
-import { fetchBuild, formatPrice, type BuildDetail as BuildDetailType } from '@/api/catalog';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { useContentEditor } from '@/context/ContentContext';
+import BuildEditDialog from '@/components/editor/BuildEditDialog';
+import { fetchBuild, deleteBuild, formatPrice, type BuildDetail as BuildDetailType, type BuildListItem } from '@/api/catalog';
 
 const BuildDetail = () => {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const { editMode, canEdit } = useContentEditor();
   const [build, setBuild] = useState<BuildDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -55,9 +66,80 @@ const BuildDetail = () => {
   }
 
   const inStock = build.status === 'in_stock';
+  const showTools = editMode && canEdit;
+
+  const handleDelete = async () => {
+    setDeleting(true);
+    try {
+      await deleteBuild(build.id);
+      toast({ title: 'Удалено', description: `«${build.name}» удалён из каталога.` });
+      navigate('/catalog');
+    } catch (e) {
+      toast({ title: 'Ошибка', description: (e as Error).message, variant: 'destructive' });
+      setDeleting(false);
+    }
+  };
+
+  // Ob'ekt dlya dialoga redaktirovaniya
+  const buildForDialog: BuildListItem = {
+    ...build,
+    is_featured: false,
+    highlights: [],
+  };
 
   return (
     <>
+      {showTools && (
+        <>
+          <div className="sticky top-16 z-30 border-b border-primary/30 bg-primary/10 backdrop-blur">
+            <div className="container-page flex items-center justify-between py-2.5">
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <Icon name="Pencil" size={15} />
+                Редактирование товара
+              </span>
+              <div className="flex gap-2">
+                <Button size="sm" onClick={() => setEditOpen(true)}>
+                  <Icon name="Pencil" size={14} className="mr-1.5" />
+                  Изменить
+                </Button>
+                <Button size="sm" variant="destructive" onClick={() => setConfirmOpen(true)}>
+                  <Icon name="Trash2" size={14} className="mr-1.5" />
+                  Удалить
+                </Button>
+              </div>
+            </div>
+          </div>
+          <BuildEditDialog
+            build={buildForDialog}
+            open={editOpen}
+            onOpenChange={setEditOpen}
+            onSaved={(patch) => setBuild((prev) => (prev ? { ...prev, ...patch } : prev))}
+          />
+          <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Удалить товар?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  «{build.name}» будет удалён из каталога без возможности восстановления.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={deleting}>Отмена</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleDelete();
+                  }}
+                  disabled={deleting}
+                >
+                  {deleting ? 'Удаляем…' : 'Удалить'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
+      )}
+
       {/* Верхний блок */}
       <section className="relative overflow-hidden border-b border-border bg-card">
         <BrandBackdrop smokeOpacity={0.3} />
@@ -76,12 +158,21 @@ const BuildDetail = () => {
             {/* Фото */}
             <div className="relative">
               <div className="pointer-events-none absolute left-1/2 top-1/2 h-[380px] w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[110px]" />
-              <div className="relative overflow-hidden rounded-2xl border border-border bg-secondary/20">
+              <div
+                className={`group relative overflow-hidden rounded-2xl border border-border bg-secondary/20 ${showTools ? 'cursor-pointer outline outline-2 outline-dashed outline-primary/40' : ''}`}
+                onClick={() => showTools && setEditOpen(true)}
+              >
                 {build.image_url ? (
                   <img src={build.image_url} alt={build.name} className="w-full object-cover" />
                 ) : (
                   <div className="flex aspect-[4/3] items-center justify-center text-muted-foreground/40">
                     <Icon name="ImageOff" size={48} />
+                  </div>
+                )}
+                {showTools && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100">
+                    <Icon name="Upload" size={26} />
+                    <span className="text-sm font-medium">Изменить фото</span>
                   </div>
                 )}
               </div>

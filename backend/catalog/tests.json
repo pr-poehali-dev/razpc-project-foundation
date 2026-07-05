@@ -26,6 +26,13 @@
       "method": "DELETE",
       "path": "/?id=1",
       "expectedStatus": 403
+    },
+    {
+      "name": "Create without admin token forbidden",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "create", "name": "Test build"},
+      "expectedStatus": 403
     }
   ]
 }

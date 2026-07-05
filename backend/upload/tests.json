@@ -1,0 +1,11 @@
+{
+  "tests": [
+    {
+      "name": "Upload without admin token forbidden",
+      "method": "POST",
+      "path": "/",
+      "body": {"file": "iVBORw0KGgo=", "content_type": "image/png"},
+      "expectedStatus": 403
+    }
+  ]
+}

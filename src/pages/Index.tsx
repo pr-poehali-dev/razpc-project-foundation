@@ -3,6 +3,8 @@ import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
 import { BrandBackdrop } from '@/components/shared';
 import Editable from '@/components/editor/Editable';
+import EditableButton from '@/components/editor/EditableButton';
+import EditableImage from '@/components/editor/EditableImage';
 import { siteInfo } from '@/config/navigation';
 
 const stats = [
@@ -30,10 +32,12 @@ const Index = () => {
     <>
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-border">
-        {/* Фон — фото ПК Geometric Future */}
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url(https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/4da08b97-be36-426f-b605-f6c306b002aa.jpeg)' }}
+        {/* Фон — фото ПК Geometric Future (редактируемое) */}
+        <EditableImage
+          id="home.hero.bg"
+          src="https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/bucket/4da08b97-be36-426f-b605-f6c306b002aa.jpeg"
+          asBackground
+          className="absolute inset-0"
         />
         {/* Затемнение для читаемости */}
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/40" />
@@ -62,18 +66,23 @@ const Index = () => {
               RazPC — ремонт, сборка и обслуживание компьютеров с гарантией результата. Работаем для частных клиентов и бизнеса.
             </Editable>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button asChild size="lg" className="w-full sm:w-auto">
-                <Link to="/catalog">
-                  <Icon name="LayoutGrid" size={18} className="mr-2" />
-                  <Editable id="home.hero.btn1">Смотреть каталог</Editable>
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-                <Link to="/configurator">
-                  <Icon name="Cpu" size={18} className="mr-2" />
-                  <Editable id="home.hero.btn2">Собрать ПК</Editable>
-                </Link>
-              </Button>
+              <EditableButton
+                id="home.hero.btn1"
+                text="Смотреть каталог"
+                href="/catalog"
+                icon="LayoutGrid"
+                size="lg"
+                className="w-full sm:w-auto"
+              />
+              <EditableButton
+                id="home.hero.btn2"
+                text="Собрать ПК"
+                href="/configurator"
+                icon="Cpu"
+                size="lg"
+                variant="outline"
+                className="w-full sm:w-auto"
+              />
             </div>
           </div>
 
@@ -162,12 +171,14 @@ const Index = () => {
               <Editable id="home.consult.text" as="p" multiline className="mt-3 block text-muted-foreground">
                 Опишите проблему — наши инженеры бесплатно проконсультируют и предложат решение.
               </Editable>
-              <Button asChild size="lg" className="mt-6 w-full">
-                <Link to="/contacts">
-                  <Icon name="Phone" size={18} className="mr-2" />
-                  <Editable id="home.consult.btn">Связаться с нами</Editable>
-                </Link>
-              </Button>
+              <EditableButton
+                id="home.consult.btn"
+                text="Связаться с нами"
+                href="/contacts"
+                icon="Phone"
+                size="lg"
+                className="mt-6 w-full"
+              />
             </div>
           </div>
         </div>
@@ -184,12 +195,14 @@ const Index = () => {
             <Editable id="home.cta.text" as="p" multiline className="mx-auto mt-4 block max-w-xl text-muted-foreground">
               Оставьте заявку — рассчитаем стоимость и сроки в течение рабочего дня.
             </Editable>
-            <Button asChild size="lg" className="mt-8">
-              <Link to="/contacts">
-                <Editable id="home.cta.btn">Оставить заявку</Editable>
-                <Icon name="ArrowRight" size={18} className="ml-2" />
-              </Link>
-            </Button>
+            <EditableButton
+              id="home.cta.btn"
+              text="Оставить заявку"
+              href="/contacts"
+              iconRight="ArrowRight"
+              size="lg"
+              className="mt-8"
+            />
           </div>
         </div>
       </section>

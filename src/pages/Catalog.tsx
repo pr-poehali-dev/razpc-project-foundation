@@ -1,13 +1,31 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageHeader, BrandBackdrop, BuildCard } from '@/components/shared';
-import { EmptyState, Spinner, Button } from '@/components/ui';
-import { fetchBuilds, type BuildListItem } from '@/api/catalog';
+import { EmptyState, Spinner, Button, Icon, useToast } from '@/components/ui';
+import { useContentEditor } from '@/context/ContentContext';
+import { fetchBuilds, createBuild, type BuildListItem } from '@/api/catalog';
 
 const Catalog = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { editMode, canEdit } = useContentEditor();
   const [builds, setBuilds] = useState<BuildListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [tier, setTier] = useState<string>('all');
+  const [creating, setCreating] = useState(false);
+
+  const handleCreate = async () => {
+    setCreating(true);
+    try {
+      const { slug } = await createBuild();
+      toast({ title: 'Создано', description: 'Заполните карточку новой конфигурации.' });
+      navigate(`/catalog/${slug}`);
+    } catch (e) {
+      toast({ title: 'Ошибка', description: (e as Error).message, variant: 'destructive' });
+      setCreating(false);
+    }
+  };
 
   useEffect(() => {
     fetchBuilds()
@@ -38,6 +56,14 @@ const Catalog = () => {
       <section className="relative overflow-hidden py-16">
         <BrandBackdrop smokeOpacity={0.25} />
         <div className="container-page relative">
+          {editMode && canEdit && (
+            <div className="mb-8 flex justify-end">
+              <Button onClick={handleCreate} disabled={creating}>
+                <Icon name={creating ? 'Loader' : 'Plus'} size={16} className={`mr-1.5 ${creating ? 'animate-spin' : ''}`} />
+                {creating ? 'Создаём…' : 'Добавить конфигурацию'}
+              </Button>
+            </div>
+          )}
           {loading ? (
             <div className="flex justify-center py-24">
               <Spinner size="lg" />

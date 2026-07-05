@@ -83,6 +83,17 @@ export async function deleteBuild(id: number): Promise<void> {
   if (!res.ok) throw new Error(data.error || 'Не удалось удалить товар');
 }
 
+export async function createBuild(name?: string): Promise<{ id: number; slug: string }> {
+  const res = await fetch(CATALOG_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Auth-Token': getToken() || '' },
+    body: JSON.stringify({ action: 'create', name: name || 'Новая конфигурация' }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Не удалось создать товар');
+  return { id: data.id, slug: data.slug };
+}
+
 export function formatPrice(value: number): string {
   return value.toLocaleString('ru-RU') + ' ₽';
 }
