@@ -16,6 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useContentEditor } from '@/context/ContentContext';
 import { useToast } from '@/hooks/use-toast';
+import { useCart } from '@/context/CartContext';
 import BuildEditDialog from '@/components/editor/BuildEditDialog';
 import { type BuildListItem, formatPrice, deleteBuild, archiveBuild } from '@/api/catalog';
 
@@ -39,11 +40,25 @@ export interface BuildCardProps {
 const BuildCard = ({ build, className, onUpdated, onDeleted }: BuildCardProps) => {
   const { editMode, canEdit } = useContentEditor();
   const { toast } = useToast();
+  const { addItem } = useCart();
   const [editOpen, setEditOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [archiving, setArchiving] = useState(false);
   const showTools = editMode && canEdit;
+
+  const handleAddToCart = () => {
+    addItem({
+      kind: 'build',
+      buildId: build.id,
+      slug: build.slug,
+      name: build.name,
+      description: build.tagline || undefined,
+      image_url: build.image_url,
+      price: build.price,
+    });
+    toast({ title: 'Компьютер добавлен в корзину', description: build.name });
+  };
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -198,12 +213,15 @@ const BuildCard = ({ build, className, onUpdated, onDeleted }: BuildCardProps) =
               {formatPrice(build.price)}
             </span>
           </div>
-          <Button asChild>
-            <Link to={`/catalog/${build.slug}`}>
-              Подробнее
-              <Icon name="ArrowRight" size={16} className="ml-1" />
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline">
+              <Link to={`/catalog/${build.slug}`}>Подробнее</Link>
+            </Button>
+            <Button onClick={handleAddToCart}>
+              <Icon name="ShoppingCart" size={16} className="mr-1.5" />
+              В корзину
+            </Button>
+          </div>
         </div>
       </div>
     </article>

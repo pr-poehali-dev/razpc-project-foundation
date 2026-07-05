@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Icon from '@/components/ui/icon';
-import { footerNav, siteInfo } from '@/config/navigation';
+import { footerNav, siteInfo, legalNav } from '@/config/navigation';
 import Editable from '@/components/editor/Editable';
 
 const Footer = () => {
@@ -66,7 +66,19 @@ const Footer = () => {
           ))}
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 sm:flex-row">
+        <div className="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t border-border pt-6">
+          {legalNav.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className="text-xs text-muted-foreground transition-colors hover:text-primary"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} {siteInfo.name}. Все права защищены.
           </p>

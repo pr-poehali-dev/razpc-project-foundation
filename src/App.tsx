@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ContentProvider } from "./context/ContentContext";
+import { CartProvider } from "./context/CartContext";
 import EditorBar from "./components/editor/EditorBar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminLayout from "./components/admin/AdminLayout";
@@ -23,6 +24,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import UiKit from "./pages/UiKit";
+import Cart from "@/pages/Cart";
+import Legal from "@/pages/Legal";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
@@ -55,6 +58,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <ContentProvider>
+          <CartProvider>
           <EditorBar />
           <Routes>
             {/* Публичный сайт */}
@@ -68,6 +72,8 @@ const App = () => (
               <Route path="/blog" element={<Blog />} />
               <Route path="/reviews" element={<Reviews />} />
               <Route path="/contacts" element={<Contacts />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/legal/:doc" element={<Legal />} />
               <Route
                 path="/account"
                 element={
@@ -249,6 +255,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </CartProvider>
           </ContentProvider>
         </AuthProvider>
       </BrowserRouter>

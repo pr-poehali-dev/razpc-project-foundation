@@ -12,6 +12,7 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useContentEditor } from '@/context/ContentContext';
+import { useCart } from '@/context/CartContext';
 import BuildEditDialog from '@/components/editor/BuildEditDialog';
 import { fetchBuild, deleteBuild, archiveBuild, formatPrice, type BuildDetail as BuildDetailType, type BuildListItem } from '@/api/catalog';
 
@@ -20,6 +21,7 @@ const BuildDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { editMode, canEdit } = useContentEditor();
+  const { addItem } = useCart();
   const [build, setBuild] = useState<BuildDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
@@ -100,6 +102,20 @@ const BuildDetail = () => {
     } finally {
       setArchiving(false);
     }
+  };
+
+  const handleAddToCart = () => {
+    if (!build) return;
+    addItem({
+      kind: 'build',
+      buildId: build.id,
+      slug: build.slug,
+      name: build.name,
+      description: build.tagline || undefined,
+      image_url: build.image_url,
+      price: build.price,
+    });
+    toast({ title: 'Компьютер добавлен в корзину', description: build.name });
   };
 
   // Ob'ekt dlya dialoga redaktirovaniya
@@ -256,16 +272,19 @@ const BuildDetail = () => {
                 <Button
                   size="lg"
                   className="w-full sm:w-auto"
-                  onClick={() => setLeadOpen(true)}
+                  onClick={handleAddToCart}
                 >
                   <Icon name="ShoppingCart" size={18} className="mr-1" />
-                  Заказать
+                  В корзину
                 </Button>
-                <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-                  <Link to="/contacts">
-                    <Icon name="MessageSquare" size={18} className="mr-1" />
-                    Консультация
-                  </Link>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  onClick={() => setLeadOpen(true)}
+                >
+                  <Icon name="Zap" size={18} className="mr-1" />
+                  Быстрый заказ
                 </Button>
               </div>
             </div>

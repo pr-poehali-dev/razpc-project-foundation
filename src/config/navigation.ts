@@ -45,6 +45,14 @@ export const footerNav = {
   },
 };
 
+export const legalNav: NavItem[] = [
+  { label: 'Пользовательское соглашение', path: '/legal/terms', icon: 'FileText' },
+  { label: 'Политика конфиденциальности', path: '/legal/privacy', icon: 'ShieldCheck' },
+  { label: 'Политика Cookie', path: '/legal/cookie', icon: 'Cookie' },
+  { label: 'Согласие на обработку данных', path: '/legal/consent', icon: 'FileCheck' },
+  { label: 'Публичная оферта', path: '/legal/offer', icon: 'Scroll' },
+];
+
 export const siteInfo = {
   name: 'RazPC',
   tagline: 'Компьютерная мастерская',
