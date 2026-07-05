@@ -1,0 +1,19 @@
+{
+  "tests": [
+    {
+      "name": "Get slides returns array",
+      "method": "GET",
+      "path": "/?build_id=6",
+      "expectedStatus": 200,
+      "expectedBody": {"slides": []},
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Save without admin forbidden",
+      "method": "POST",
+      "path": "/",
+      "body": {"build_id": 6, "slides": []},
+      "expectedStatus": 403
+    }
+  ]
+}

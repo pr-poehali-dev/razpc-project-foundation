@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { BrandBackdrop, BuildStory } from '@/components/shared';
+import { BrandBackdrop } from '@/components/shared';
+import SlideEditor from '@/components/editor/slides/SlideEditor';
 import {
   Spinner, EmptyState, Button, Badge, Icon,
   Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink,
@@ -276,18 +277,18 @@ const BuildDetail = () => {
         </div>
       </section>
 
-      {/* Блок конфигурации */}
+      {/* Презентация — конструктор слайдов */}
       <section className="relative overflow-hidden py-16">
         <BrandBackdrop smokeOpacity={0.2} arcs={false} />
         <div className="container-page relative">
           <div className="mb-8 flex items-center gap-3">
-            <h2 className="font-heading text-2xl font-bold md:text-3xl">Конфигурация</h2>
+            <h2 className="font-heading text-2xl font-bold md:text-3xl">Презентация</h2>
             <span className="rounded-full bg-secondary px-3 py-1 text-sm text-muted-foreground">
               {build.components.length} компонентов
             </span>
           </div>
 
-          <BuildStory build={build} />
+          <SlideEditor buildId={build.id} />
 
           <div className="mt-12 flex justify-center">
             <Button asChild variant="outline">
