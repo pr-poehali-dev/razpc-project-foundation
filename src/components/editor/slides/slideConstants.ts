@@ -1,4 +1,4 @@
-import type { Slide, SlideTextStyle } from '@/api/slides';
+import type { Slide, SlideTextStyle, AnimType } from '@/api/slides';
 import { makeId } from '@/api/slides';
 
 export const FONT_SIZES = [
@@ -50,6 +50,22 @@ export function styleToClass(s?: SlideTextStyle): string {
   return [s.size, s.font, s.weight, s.align].filter(Boolean).join(' ');
 }
 
+export const ANIM_OPTIONS: { icon: string; label: string; value: AnimType }[] = [
+  { icon: 'Ban', label: 'Без анимации', value: 'none' },
+  { icon: 'ArrowDown', label: 'Сверху вниз', value: 'top' },
+  { icon: 'ArrowRight', label: 'Выезд справа', value: 'right' },
+  { icon: 'ArrowLeft', label: 'Выезд слева', value: 'left' },
+  { icon: 'ZoomIn', label: 'Появление + зум', value: 'zoom' },
+];
+
+export const ANIM_CLASS: Record<AnimType, string> = {
+  none: '',
+  top: 'slide-anim-top',
+  right: 'slide-anim-right',
+  left: 'slide-anim-left',
+  zoom: 'slide-anim-zoom',
+};
+
 export function emptySlide(): Slide {
   return {
     id: makeId(),
@@ -64,6 +80,7 @@ export function emptySlide(): Slide {
         w: 60,
         value: 'Новый заголовок',
         style: { ...DEFAULT_TEXT_STYLE },
+        anim: { type: 'top', delay: 0, duration: 0.6 },
       },
     ],
   };

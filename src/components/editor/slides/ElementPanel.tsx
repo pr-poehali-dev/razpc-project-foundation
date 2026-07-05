@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { uploadImage } from '@/api/upload';
-import type { SlideElement, SlideTextStyle } from '@/api/slides';
-import { FONT_SIZES, FONTS, WEIGHTS, ALIGNS, COLORS } from './slideConstants';
+import type { SlideElement, SlideTextStyle, SlideAnim } from '@/api/slides';
+import { DEFAULT_ANIM } from '@/api/slides';
+import { FONT_SIZES, FONTS, WEIGHTS, ALIGNS, COLORS, ANIM_OPTIONS } from './slideConstants';
 
 interface ElementPanelProps {
   element: SlideElement;
@@ -20,9 +21,13 @@ const ElementPanel = ({ element, onChange, onDelete }: ElementPanelProps) => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const style = element.style ?? {};
+  const anim: SlideAnim = element.anim ?? DEFAULT_ANIM;
 
   const setStyle = (patch: Partial<SlideTextStyle>) =>
     onChange({ style: { ...style, ...patch } });
+
+  const setAnim = (patch: Partial<SlideAnim>) =>
+    onChange({ anim: { ...anim, ...patch } });
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -186,6 +191,58 @@ const ElementPanel = ({ element, onChange, onDelete }: ElementPanelProps) => {
           onChange={(e) => onChange({ w: Number(e.target.value) })}
           className="w-full accent-primary"
         />
+      </div>
+
+      {/* Анимация появления */}
+      <div className="space-y-2 border-t border-border pt-3">
+        <Label className="flex items-center gap-1.5 text-xs">
+          <Icon name="Sparkles" size={13} />
+          Анимация появления
+        </Label>
+        <div className="grid grid-cols-2 gap-1">
+          {ANIM_OPTIONS.map((a) => (
+            <button
+              key={a.value}
+              onClick={() => setAnim({ type: a.value })}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded border px-2 py-1.5 text-xs',
+                anim.type === a.value ? 'border-primary bg-primary/10 text-primary' : 'border-border',
+              )}
+            >
+              <Icon name={a.icon} size={13} />
+              {a.label}
+            </button>
+          ))}
+        </div>
+
+        {anim.type !== 'none' && (
+          <>
+            <div className="space-y-1">
+              <Label className="text-xs">Задержка старта: {anim.delay.toFixed(1)} с</Label>
+              <input
+                type="range"
+                min={0}
+                max={3}
+                step={0.1}
+                value={anim.delay}
+                onChange={(e) => setAnim({ delay: Number(e.target.value) })}
+                className="w-full accent-primary"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs">Длительность: {anim.duration.toFixed(1)} с</Label>
+              <input
+                type="range"
+                min={0.2}
+                max={2.5}
+                step={0.1}
+                value={anim.duration}
+                onChange={(e) => setAnim({ duration: Number(e.target.value) })}
+                className="w-full accent-primary"
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

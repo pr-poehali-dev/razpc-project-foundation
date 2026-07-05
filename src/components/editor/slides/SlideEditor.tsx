@@ -14,6 +14,7 @@ import {
 import { DEFAULT_TEXT_STYLE, emptySlide, COLORS } from './slideConstants';
 import SlideCanvas from './SlideCanvas';
 import ElementPanel from './ElementPanel';
+import SlidePlayer from './SlidePlayer';
 
 interface SlideEditorProps {
   buildId: number;
@@ -30,6 +31,9 @@ const SlideEditor = ({ buildId }: SlideEditorProps) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [previewKey, setPreviewKey] = useState(0);
+  const [previewing, setPreviewing] = useState(false);
 
   useEffect(() => {
     fetchSlides(buildId)
@@ -69,6 +73,7 @@ const SlideEditor = ({ buildId }: SlideEditorProps) => {
       w: 50,
       value: 'Текст',
       style: { ...DEFAULT_TEXT_STYLE, size: 'text-2xl' },
+      anim: { type: 'top', delay: 0, duration: 0.6 },
     };
     updateSlide({ ...slide, elements: [...slide.elements, el] });
     setSelectedId(el.id);
@@ -79,13 +84,20 @@ const SlideEditor = ({ buildId }: SlideEditorProps) => {
     const el: SlideElement = {
       id: makeId(),
       type: 'image',
-      x: 10,
-      y: 20,
-      w: 40,
+      x: 45,
+      y: 25,
+      w: 45,
       value: '',
+      anim: { type: 'right', delay: 0.4, duration: 0.7 },
     };
     updateSlide({ ...slide, elements: [...slide.elements, el] });
     setSelectedId(el.id);
+  };
+
+  const playPreview = () => {
+    setPreviewing(true);
+    setPreviewKey((k) => k + 1);
+    setTimeout(() => setPreviewing(false), 4000);
   };
 
   const addSlide = () => {
@@ -160,13 +172,24 @@ const SlideEditor = ({ buildId }: SlideEditorProps) => {
           <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-border bg-card">
             {slide && (
               <SlideCanvas
+                key={previewing ? `preview-${previewKey}` : 'edit'}
                 slide={slide}
-                editable={editable}
+                editable={editable && !previewing}
+                animate={previewing}
                 selectedId={selectedId}
                 onSelect={setSelectedId}
                 onChange={updateSlide}
               />
             )}
+
+            {/* Кнопка полноэкранного просмотра (видна всем) */}
+            <button
+              onClick={() => setPlaying(true)}
+              className="absolute right-3 top-3 z-20 inline-flex items-center gap-1.5 rounded-full border border-border bg-background/70 px-3 py-1.5 text-sm font-medium backdrop-blur transition hover:bg-background"
+            >
+              <Icon name="Play" size={15} />
+              Смотреть
+            </button>
 
             {/* Стрелки навигации */}
             {slides.length > 1 && (
@@ -234,6 +257,10 @@ const SlideEditor = ({ buildId }: SlideEditorProps) => {
                 ))}
               </div>
 
+              <Button size="sm" variant="outline" onClick={playPreview}>
+                <Icon name="Sparkles" size={14} className="mr-1" /> Проиграть
+              </Button>
+
               <div className="mx-1 h-5 w-px bg-border" />
               <Button size="sm" variant="outline" onClick={addSlide}>
                 <Icon name="Plus" size={14} className="mr-1" /> Слайд
@@ -264,8 +291,12 @@ const SlideEditor = ({ buildId }: SlideEditorProps) => {
 
       {editable && !selected && (
         <p className="text-center text-xs text-muted-foreground">
-          Нажмите на текст или фото, чтобы настроить. Перетаскивайте элементы мышью.
+          Нажмите на текст или фото, чтобы настроить. Перетаскивайте элементы мышью — появятся направляющие для выравнивания.
         </p>
+      )}
+
+      {playing && (
+        <SlidePlayer slides={slides} startIndex={current} onClose={() => setPlaying(false)} />
       )}
     </div>
   );

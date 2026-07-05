@@ -10,6 +10,16 @@ export interface SlideTextStyle {
   color?: string;     // css color / var
 }
 
+export type AnimType = 'none' | 'top' | 'right' | 'left' | 'zoom';
+
+export interface SlideAnim {
+  type: AnimType;
+  /** задержка перед стартом, сек */
+  delay: number;
+  /** длительность анимации, сек */
+  duration: number;
+}
+
 export interface SlideElement {
   id: string;
   type: 'text' | 'image';
@@ -21,7 +31,10 @@ export interface SlideElement {
   /** для текста: содержимое; для image: url */
   value: string;
   style?: SlideTextStyle;
+  anim?: SlideAnim;
 }
+
+export const DEFAULT_ANIM: SlideAnim = { type: 'zoom', delay: 0, duration: 0.6 };
 
 export interface Slide {
   id: string;
