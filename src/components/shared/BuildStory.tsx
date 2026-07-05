@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Icon from '@/components/ui/icon';
 import { Button } from '@/components/ui/button';
@@ -15,125 +15,120 @@ const typeMeta: Record<string, { icon: string; label: string }> = {
   CASE: { icon: 'Box', label: 'Корпус' },
 };
 
-// Слайд 1 — обзор сборки
-const OverviewSlide = ({ build }: { build: BuildDetail }) => {
-  const cpu = build.components.find((c) => c.type === 'CPU');
-  const gpu = build.components.find((c) => c.type === 'GPU');
+const order = ['CPU', 'GPU', 'RAM', 'SSD', 'MOTHERBOARD', 'PSU', 'CASE'];
 
-  return (
-    <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-      <div className="relative order-2 lg:order-1">
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[100px]" />
-        {build.image_url && (
-          <img
-            src={build.image_url}
-            alt={build.name}
-            className="relative mx-auto max-h-[380px] w-auto rounded-2xl object-contain"
-          />
-        )}
-      </div>
+// ── Полноэкранный слайд-обзор ──
+const OverviewSlide = ({ build }: { build: BuildDetail }) => (
+  <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
+    {build.image_url && (
+      <img
+        src={build.image_url}
+        alt={build.name}
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+    )}
+    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/30" />
+    <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent" />
 
-      <div className="order-1 lg:order-2">
-        <span className="text-xs font-medium uppercase tracking-widest text-primary">
+    <div className="container-page relative flex h-full flex-col justify-center py-16">
+      <div className="max-w-2xl">
+        <span className="text-sm font-medium uppercase tracking-widest text-primary">
           Обзор сборки
         </span>
-        <h3 className="mt-2 font-heading text-3xl font-bold md:text-4xl">Ключевые задачи</h3>
-        <p className="mt-2 text-muted-foreground">Для чего создан {build.name}</p>
+        <h3 className="mt-3 font-heading text-4xl font-bold leading-tight md:text-6xl">
+          Ключевые задачи
+        </h3>
+        <p className="mt-3 text-lg text-muted-foreground">Для чего создан {build.name}</p>
 
         {build.key_tasks && build.key_tasks.length > 0 && (
-          <ul className="mt-6 space-y-3">
+          <ul className="mt-8 space-y-4">
             {build.key_tasks.map((t) => (
-              <li key={t} className="flex items-center gap-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                  <Icon name="Check" size={16} strokeWidth={3} />
+              <li key={t} className="flex items-center gap-3 text-lg">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                  <Icon name="Check" size={18} strokeWidth={3} />
                 </span>
-                <span className="font-medium text-foreground/90">{t}</span>
+                <span className="font-medium text-foreground">{t}</span>
               </li>
             ))}
           </ul>
         )}
-
-        <div className="mt-8 flex flex-wrap gap-3">
-          {cpu && (
-            <div className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-4 py-3">
-              <Icon name="Cpu" size={20} className="text-primary" />
-              <div>
-                <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Процессор</p>
-                <p className="text-sm font-semibold">{cpu.name}</p>
-              </div>
-            </div>
-          )}
-          {gpu && (
-            <div className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-4 py-3">
-              <Icon name="MonitorPlay" size={20} className="text-primary" />
-              <div>
-                <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Видеокарта</p>
-                <p className="text-sm font-semibold">{gpu.name}</p>
-              </div>
-            </div>
-          )}
-        </div>
       </div>
     </div>
-  );
-};
+  </div>
+);
 
-// Слайд комплектующей
-const ComponentSlide = ({ component, index, total }: { component: BuildComponent; index: number; total: number }) => {
+// ── Полноэкранный слайд комплектующей ──
+const ComponentSlide = ({
+  component,
+  index,
+  total,
+}: {
+  component: BuildComponent;
+  index: number;
+  total: number;
+}) => {
   const meta = typeMeta[component.type] ?? { icon: 'Cpu', label: component.type };
   const specs =
     component.key_specs && component.key_specs.length > 0 ? component.key_specs : [component.spec];
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
-      {/* Фото */}
-      <div className="relative">
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[100px]" />
-        {component.image_url ? (
-          <img
-            src={component.image_url}
-            alt={component.name}
-            className="relative mx-auto max-h-[360px] w-auto rounded-2xl object-contain"
-          />
-        ) : (
-          <div className="relative flex aspect-square items-center justify-center rounded-2xl border border-border bg-secondary/40 text-muted-foreground/40">
-            <Icon name={meta.icon} size={64} />
-          </div>
-        )}
-      </div>
+    <div className="relative flex h-full w-full items-center overflow-hidden">
+      {/* Фоновое свечение */}
+      <div className="pointer-events-none absolute right-0 top-1/2 h-[600px] w-[600px] -translate-y-1/2 translate-x-1/4 rounded-full bg-primary/10 blur-[130px]" />
 
-      {/* Текст */}
-      <div>
-        <div className="mb-3 flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
-            <Icon name={meta.icon} size={20} />
-          </span>
-          <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            {meta.label} · {index}/{total}
-          </span>
-        </div>
-
-        <span className="inline-flex items-center rounded-md bg-primary/15 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-primary">
-          {component.brand}
-        </span>
-        <h3 className="mt-3 font-heading text-3xl font-bold md:text-4xl">{component.name}</h3>
-        {component.role && <p className="mt-2 text-lg font-medium text-primary">{component.role}</p>}
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          {specs.map((s) => (
-            <span
-              key={s}
-              className="rounded-xl border border-border/60 bg-secondary/50 px-4 py-2.5 text-sm font-semibold text-foreground"
-            >
-              {s}
+      <div className="container-page relative grid h-full items-center gap-8 py-14 lg:grid-cols-2">
+        {/* Текст */}
+        <div className="order-2 lg:order-1">
+          <div className="mb-4 flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-primary">
+              <Icon name={meta.icon} size={22} />
             </span>
-          ))}
+            <span className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+              {meta.label} · {index}/{total}
+            </span>
+          </div>
+
+          <span className="inline-flex items-center rounded-md bg-primary/15 px-3 py-1 text-sm font-bold uppercase tracking-wider text-primary">
+            {component.brand}
+          </span>
+          <h3 className="mt-4 font-heading text-4xl font-bold leading-tight md:text-6xl">
+            {component.name}
+          </h3>
+          {component.role && (
+            <p className="mt-3 text-xl font-medium text-primary">{component.role}</p>
+          )}
+
+          <div className="mt-8 flex flex-wrap gap-3">
+            {specs.map((s) => (
+              <span
+                key={s}
+                className="rounded-xl border border-border/60 bg-card/70 px-5 py-3 text-base font-semibold text-foreground backdrop-blur-sm"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+
+          <Button variant="outline" size="lg" className="mt-9">
+            Подробнее о компоненте
+            <Icon name="ArrowRight" size={18} className="ml-1" />
+          </Button>
         </div>
 
-        <Button variant="outline" className="mt-7">
-          Подробнее о компоненте
-          <Icon name="ArrowRight" size={16} className="ml-1" />
-        </Button>
+        {/* Фото */}
+        <div className="relative order-1 flex items-center justify-center lg:order-2">
+          {component.image_url ? (
+            <img
+              src={component.image_url}
+              alt={component.name}
+              className="relative max-h-[60vh] w-auto object-contain drop-shadow-2xl"
+            />
+          ) : (
+            <div className="flex aspect-square w-full max-w-md items-center justify-center rounded-3xl border border-border bg-secondary/40 text-muted-foreground/40">
+              <Icon name={meta.icon} size={96} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -144,10 +139,8 @@ export interface BuildStoryProps {
   className?: string;
 }
 
-const order = ['CPU', 'GPU', 'RAM', 'SSD', 'MOTHERBOARD', 'PSU', 'CASE'];
-
 const BuildStory = ({ build, className }: BuildStoryProps) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: 'start' });
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
   const [selected, setSelected] = useState(0);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
@@ -172,65 +165,70 @@ const BuildStory = ({ build, className }: BuildStoryProps) => {
     };
   }, [emblaApi]);
 
+  // Навигация клавиатурой
+  const handleKey = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'ArrowRight') emblaApi?.scrollNext();
+      if (e.key === 'ArrowLeft') emblaApi?.scrollPrev();
+    },
+    [emblaApi],
+  );
+
   return (
-    <div className={cn('relative', className)}>
-      {/* Слайды */}
+    <div
+      className={cn(
+        'relative overflow-hidden rounded-3xl border border-border/80 bg-card outline-none',
+        className,
+      )}
+      tabIndex={0}
+      onKeyDown={handleKey}
+    >
+      {/* Слайды на весь экран блока */}
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
-          <div className="min-w-0 flex-[0_0_100%] px-1">
-            <div className="rounded-3xl border border-border/80 bg-card p-6 shadow-sm-premium md:p-10">
-              <OverviewSlide build={build} />
-            </div>
+          <div className="h-[80vh] min-h-[560px] min-w-0 flex-[0_0_100%]">
+            <OverviewSlide build={build} />
           </div>
           {sorted.map((c, i) => (
-            <div key={c.type} className="min-w-0 flex-[0_0_100%] px-1">
-              <div className="rounded-3xl border border-border/80 bg-card p-6 shadow-sm-premium md:p-10">
-                <ComponentSlide component={c} index={i + 1} total={sorted.length} />
-              </div>
+            <div key={c.type} className="h-[80vh] min-h-[560px] min-w-0 flex-[0_0_100%]">
+              <ComponentSlide component={c} index={i + 1} total={sorted.length} />
             </div>
           ))}
         </div>
       </div>
 
-      {/* Навигация */}
-      <div className="mt-6 flex items-center justify-between">
-        <div className="flex gap-2">
-          {Array.from({ length: slidesCount }).map((_, i) => (
-            <button
-              key={i}
-              aria-label={`Слайд ${i + 1}`}
-              onClick={() => emblaApi?.scrollTo(i)}
-              className={cn(
-                'h-2 rounded-full transition-all duration-300',
-                i === selected ? 'w-7 bg-primary' : 'w-2 bg-border hover:bg-muted-foreground/50',
-              )}
-            />
-          ))}
-        </div>
+      {/* Стрелки поверх слайда */}
+      <button
+        aria-label="Предыдущий слайд"
+        disabled={!canPrev}
+        onClick={() => emblaApi?.scrollPrev()}
+        className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur-sm transition-all hover:bg-background disabled:pointer-events-none disabled:opacity-0"
+      >
+        <Icon name="ChevronLeft" size={22} />
+      </button>
+      <button
+        aria-label="Следующий слайд"
+        disabled={!canNext}
+        onClick={() => emblaApi?.scrollNext()}
+        className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur-sm transition-all hover:bg-background disabled:pointer-events-none disabled:opacity-0"
+      >
+        <Icon name="ChevronRight" size={22} />
+      </button>
 
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            disabled={!canPrev}
-            onClick={() => emblaApi?.scrollPrev()}
-          >
-            <Icon name="ArrowLeft" size={18} />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            disabled={!canNext}
-            onClick={() => emblaApi?.scrollNext()}
-          >
-            <Icon name="ArrowRight" size={18} />
-          </Button>
-        </div>
+      {/* Полоски-индикаторы снизу */}
+      <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+        {Array.from({ length: slidesCount }).map((_, i) => (
+          <button
+            key={i}
+            aria-label={`Слайд ${i + 1}`}
+            onClick={() => emblaApi?.scrollTo(i)}
+            className={cn(
+              'h-1.5 rounded-full transition-all duration-300',
+              i === selected ? 'w-8 bg-primary' : 'w-4 bg-foreground/25 hover:bg-foreground/50',
+            )}
+          />
+        ))}
       </div>
-
-      <p className="mt-4 text-center text-xs text-muted-foreground">
-        Листайте свайпом или стрелками — презентация каждого компонента
-      </p>
     </div>
   );
 };
