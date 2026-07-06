@@ -6,6 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ContentProvider } from "./context/ContentContext";
 import { CartProvider } from "./context/CartContext";
+import { CityProvider } from "./context/CityContext";
+import { ConfigProvider } from "./context/ConfigContext";
+import CityPickerDialog from "./components/shop/CityPickerDialog";
 import EditorBar from "./components/editor/EditorBar";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AdminLayout from "./components/admin/AdminLayout";
@@ -26,6 +29,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import UiKit from "./pages/UiKit";
 import Cart from "@/pages/Cart";
 import Legal from "@/pages/Legal";
+import ProductPage from "@/pages/ProductPage";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUsers from "./pages/admin/AdminUsers";
@@ -59,13 +63,17 @@ const App = () => (
         <AuthProvider>
           <ContentProvider>
           <CartProvider>
+          <CityProvider>
+          <ConfigProvider>
           <EditorBar />
+          <CityPickerDialog />
           <Routes>
             {/* Публичный сайт */}
             <Route element={<Layout />}>
               <Route path="/" element={<Index />} />
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/catalog/:slug" element={<BuildDetail />} />
+              <Route path="/shop/:slug" element={<ProductPage />} />
               <Route path="/configurator" element={<Configurator />} />
               <Route path="/works" element={<Works />} />
               <Route path="/about" element={<About />} />
@@ -255,6 +263,8 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </ConfigProvider>
+          </CityProvider>
           </CartProvider>
           </ContentProvider>
         </AuthProvider>

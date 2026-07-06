@@ -1,0 +1,2 @@
+UPDATE products SET image_url = 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/files/0bb94e8a-9213-41cd-b359-e91918a5e712.jpg' WHERE category_id = (SELECT id FROM product_categories WHERE code = 'motherboard');
+UPDATE products SET image_url = 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/files/f6143929-8678-4522-827c-040c170962fc.jpg' WHERE category_id = (SELECT id FROM product_categories WHERE code = 'ram');

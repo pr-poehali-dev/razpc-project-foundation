@@ -1,0 +1,2 @@
+UPDATE products SET image_url = 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/files/f2b78ebe-99ac-4d27-a958-449e1f841160.jpg' WHERE category_id = (SELECT id FROM product_categories WHERE code = 'cpu');
+UPDATE products SET image_url = 'https://cdn.poehali.dev/projects/ceee2e70-3669-48d3-bf57-9e84dc7c6151/files/49395a69-a40d-4338-8789-1bfd79faa542.jpg' WHERE category_id = (SELECT id FROM product_categories WHERE code = 'gpu');

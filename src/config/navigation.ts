@@ -34,7 +34,8 @@ export const footerNav = {
   services: {
     title: 'Услуги',
     items: [
-      { label: 'Каталог', path: '/catalog', icon: 'LayoutGrid' },
+      { label: 'Готовые ПК', path: '/catalog', icon: 'LayoutGrid' },
+      { label: 'Комплектующие', path: '/catalog?section=parts', icon: 'Boxes' },
       { label: 'Конфигуратор ПК', path: '/configurator', icon: 'Cpu' },
       { label: 'Контакты', path: '/contacts', icon: 'MapPin' },
     ] as NavItem[],

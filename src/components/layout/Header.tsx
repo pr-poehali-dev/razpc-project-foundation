@@ -6,6 +6,7 @@ import { mainNav, siteInfo } from '@/config/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useContentEditor } from '@/context/ContentContext';
 import { useCart } from '@/context/CartContext';
+import { useCity } from '@/context/CityContext';
 import {
   Sheet,
   SheetContent,
@@ -17,6 +18,20 @@ const Header = () => {
   const { user, isStaff } = useAuth();
   const { canEdit, editMode, toggleEditMode } = useContentEditor();
   const { count } = useCart();
+  const { city, openPicker } = useCity();
+
+  const CityButton = ({ mobile }: { mobile?: boolean }) => (
+    <button
+      onClick={() => { openPicker(); if (mobile) setOpen(false); }}
+      className={mobile
+        ? 'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground'
+        : 'flex items-center gap-1 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-primary'}
+    >
+      <Icon name="MapPin" size={mobile ? 18 : 15} className="text-primary" />
+      <span className="max-w-[130px] truncate">{city?.name || 'Выбрать город'}</span>
+      {!mobile && <Icon name="ChevronDown" size={13} />}
+    </button>
+  );
 
   const CartButton = ({ mobile }: { mobile?: boolean }) => (
     <Link
@@ -73,6 +88,7 @@ const Header = () => {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
+          <CityButton />
           <CartButton />
           {user ? (
             <>
@@ -148,6 +164,7 @@ const Header = () => {
                 </NavLink>
               ))}
               <div className="my-3 h-px bg-border" />
+              <CityButton mobile />
               <CartButton mobile />
               {user ? (
                 <>

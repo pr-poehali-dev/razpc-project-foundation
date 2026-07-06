@@ -1,0 +1,14 @@
+{
+  "tests": [
+    { "name": "OPTIONS returns 200", "method": "OPTIONS", "path": "/", "expectedStatus": 200 },
+    { "name": "Categories list", "method": "GET", "path": "/?resource=categories", "expectedStatus": 200 },
+    { "name": "Products list", "method": "GET", "path": "/?resource=products", "expectedStatus": 200 },
+    { "name": "Products by category cpu", "method": "GET", "path": "/?resource=products&category=cpu", "expectedStatus": 200 },
+    { "name": "Product detail by slug", "method": "GET", "path": "/?resource=products&slug=cpu-r5-5600", "expectedStatus": 200 },
+    { "name": "Product not found", "method": "GET", "path": "/?resource=products&slug=nope-xxx", "expectedStatus": 404 },
+    { "name": "Cities list", "method": "GET", "path": "/?resource=cities", "expectedStatus": 200 },
+    { "name": "Delivery calc", "method": "POST", "path": "/?resource=delivery", "body": {"city_id": 1, "items": [{"weight_g": 500, "length_mm": 200, "width_mm": 150, "height_mm": 60, "qty": 1}]}, "expectedStatus": 200 },
+    { "name": "PVZ list for city", "method": "GET", "path": "/?resource=pvz&city_id=1", "expectedStatus": 200 },
+    { "name": "Unknown resource", "method": "GET", "path": "/?resource=xxx", "expectedStatus": 400 }
+  ]
+}

@@ -4,12 +4,13 @@ import { PageHeader, BrandBackdrop } from '@/components/shared';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/context/CartContext';
+import { useConfig } from '@/context/ConfigContext';
 import {
   slots, type AnyPart, type SlotDef, type CpuPart, type MotherboardPart,
   type GpuPart, type RamPart, type StoragePart, type PsuPart, type CoolerPart, type CasePart,
 } from '@/config/pcParts';
 import {
-  emptyBuild, type BuildState, partsCost, assemblyCost, isBuildComplete, isBuildCompatible,
+  type BuildState, partsCost, assemblyCost, isBuildComplete, isBuildCompatible,
 } from '@/lib/pcCompat';
 import ProgressSidebar from '@/components/configurator/ProgressSidebar';
 import SlotBlock, { type SlotEntry } from '@/components/configurator/SlotBlock';
@@ -20,7 +21,7 @@ const Configurator = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { addItem } = useCart();
-  const [build, setBuild] = useState<BuildState>(emptyBuild);
+  const { build, setBuild, reset } = useConfig();
   const [pickerSlot, setPickerSlot] = useState<SlotDef | null>(null);
 
   const filled: Record<string, boolean> = {
@@ -117,8 +118,10 @@ const Configurator = () => {
       description: `${components.length} комплектующих · профессиональная сборка`,
       price: total,
       components,
+      weight_g: 9000, length_mm: 500, width_mm: 250, height_mm: 500,
     });
     toast({ title: 'Сборка добавлена в корзину', description: `Готовый ПК на сумму ${total.toLocaleString('ru-RU')} ₽` });
+    reset();
     navigate('/cart');
   };
 

@@ -7,8 +7,9 @@ export interface CartItemComponent {
 
 export interface CartItem {
   id: string;
-  kind: 'build' | 'config';
+  kind: 'build' | 'config' | 'part';
   buildId?: number;
+  productId?: number;
   slug?: string;
   name: string;
   description?: string;
@@ -16,6 +17,11 @@ export interface CartItem {
   price: number;
   qty: number;
   components?: CartItemComponent[];
+  /** Габариты для расчёта доставки (грамм / мм) */
+  weight_g?: number;
+  length_mm?: number;
+  width_mm?: number;
+  height_mm?: number;
 }
 
 interface CartContextValue {
@@ -59,6 +65,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       // Gotovaya sborka iz kataloga skladyvaetsya po kolichestvu
       if (item.kind === 'build' && item.buildId) {
         const existing = prev.find((i) => i.kind === 'build' && i.buildId === item.buildId);
+        if (existing) {
+          return prev.map((i) =>
+            i.id === existing.id ? { ...i, qty: i.qty + (item.qty || 1) } : i,
+          );
+        }
+      }
+      // Komplektuyushchaya skladyvaetsya po productId
+      if (item.kind === 'part' && item.productId) {
+        const existing = prev.find((i) => i.kind === 'part' && i.productId === item.productId);
         if (existing) {
           return prev.map((i) =>
             i.id === existing.id ? { ...i, qty: i.qty + (item.qty || 1) } : i,
